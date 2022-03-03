@@ -5,22 +5,19 @@
 #include <Wire.h>
 #include <WiFiUdp.h>
 #include <HTTPClient.h>
-
-
-#define DHTPIN1 32//26
-#define DHTPIN2 33//27
-#define DHTPIN3 25//32
-#define DHTPIN4 26//33
-#define DHTPIN5 27//14
-#define DHTPIN6 14//12
-#define DHTPIN7 12//25
+#define DHTPIN1 32
+#define DHTPIN2 33
+#define DHTPIN3 25
+#define DHTPIN4 26
+#define DHTPIN5 27
+#define DHTPIN6 14
+#define DHTPIN7 12
 #define DHTPIN8 15
 #define DHTPIN9 02
 #define DHTPIN10 04
 #define DHTPIN11 16
 #define DHTPIN12 17
 #define DHTPIN13 05
-
 #define DHTTYPE1 DHT22
 #define DHTTYPE2 DHT22
 #define DHTTYPE3 DHT22
@@ -77,36 +74,39 @@ int lcdRows = 4;
 
 
 const char* root_ca= \
-"-----BEGIN CERTIFICATE-----\n"\
-"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\n"\
+"-----BEGIN CERTIFICATE-----\n" \
+"MIIF2DCCA8CgAwIBAgIQTKr5yttjb+Af907YWwOGnTANBgkqhkiG9w0BAQwFADCB\n" \
+"hTELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4G\n" \
+"A1UEBxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RPIENBIExpbWl0ZWQxKzApBgNV\n" \
+"BAMTIkNPTU9ETyBSU0EgQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkwHhcNMTAwMTE5\n" \
+"MDAwMDAwWhcNMzgwMTE4MjM1OTU5WjCBhTELMAkGA1UEBhMCR0IxGzAZBgNVBAgT\n" \
+"EkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgGA1UEChMR\n" \
+"Q09NT0RPIENBIExpbWl0ZWQxKzApBgNVBAMTIkNPTU9ETyBSU0EgQ2VydGlmaWNh\n" \
+"dGlvbiBBdXRob3JpdHkwggIiMA0GCSqGSIb3DQEBAQUAA4ICDwAwggIKAoICAQCR\n" \
+"6FSS0gpWsawNJN3Fz0RndJkrN6N9I3AAcbxT38T6KhKPS38QVr2fcHK3YX/JSw8X\n" \
+"pz3jsARh7v8Rl8f0hj4K+j5c+ZPmNHrZFGvnnLOFoIJ6dq9xkNfs/Q36nGz637CC\n" \
+"9BR++b7Epi9Pf5l/tfxnQ3K9DADWietrLNPtj5gcFKt+5eNu/Nio5JIk2kNrYrhV\n" \
+"/erBvGy2i/MOjZrkm2xpmfh4SDBF1a3hDTxFYPwyllEnvGfDyi62a+pGx8cgoLEf\n" \
+"Zd5ICLqkTqnyg0Y3hOvozIFIQ2dOciqbXL1MGyiKXCJ7tKuY2e7gUYPDCUZObT6Z\n" \
+"+pUX2nwzV0E8jVHtC7ZcryxjGt9XyD+86V3Em69FmeKjWiS0uqlWPc9vqv9JWL7w\n" \
+"qP/0uK3pN/u6uPQLOvnoQ0IeidiEyxPx2bvhiWC4jChWrBQdnArncevPDt09qZah\n" \
+"SL0896+1DSJMwBGB7FY79tOi4lu3sgQiUpWAk2nojkxl8ZEDLXB0AuqLZxUpaVIC\n" \
+"u9ffUGpVRr+goyhhf3DQw6KqLCGqR84onAZFdr+CGCe01a60y1Dma/RMhnEw6abf\n" \
+"Fobg2P9A3fvQQoh/ozM6LlweQRGBY84YcWsr7KaKtzFcOmpH4MN5WdYgGq/yapiq\n" \
+"crxXStJLnbsQ/LBMQeXtHT1eKJ2czL+zUdqnR+WEUwIDAQABo0IwQDAdBgNVHQ4E\n" \
+"FgQUu69+Aj36pvE8hI6t7jiY7NkyMtQwDgYDVR0PAQH/BAQDAgEGMA8GA1UdEwEB\n" \
+"/wQFMAMBAf8wDQYJKoZIhvcNAQEMBQADggIBAArx1UaEt65Ru2yyTUEUAJNMnMvl\n" \
+"wFTPoCWOAvn9sKIN9SCYPBMtrFaisNZ+EZLpLrqeLppysb0ZRGxhNaKatBYSaVqM\n" \
+"4dc+pBroLwP0rmEdEBsqpIt6xf4FpuHA1sj+nq6PK7o9mfjYcwlYRm6mnPTXJ9OV\n" \
+"2jeDchzTc+CiR5kDOF3VSXkAKRzH7JsgHAckaVd4sjn8OoSgtZx8jb8uk2Intzna\n" \
+"FxiuvTwJaP+EmzzV1gsD41eeFPfR60/IvYcjt7ZJQ3mFXLrrkguhxuhoqEwWsRqZ\n" \
+"CuhTLJK7oQkYdQxlqHvLI7cawiiFwxv/0Cti76R7CZGYZ4wUAc1oBmpjIXUDgIiK\n" \
+"boHGhfKppC3n9KUkEEeDys30jXlYsQab5xoq2Z0B15R97QNKyvDb6KkBPvVWmcke\n" \
+"jkk9u+UJueBPSZI9FoJAzMxZxuY67RIuaTxslbH9qh17f4a+Hg4yRvv7E491f0yL\n" \
+"S0Zj/gA0QHDBw7mh3aZw4gSzQbzpgJHqZJx64SIDqZxubw5lT2yHh17zbqD5daWb\n" \
+"QOhTsiedSrnAdyGN/4fy3ryM7xfft0kL0fJuMAsaDk527RH89elWsn2/x20Kk4yl\n" \
+"0MC2Hb46TpSi125sC8KKfPog88Tk5c0NqMuRkrF8hey1FGlmDoLnzc7ILaZRfyHB\n" \
+"NVOFBkpdn627G190\n" \
 "-----END CERTIFICATE-----\n";
 
 LiquidCrystal_I2C lcd(0x27, lcdColumns, lcdRows);
@@ -126,392 +126,241 @@ void setup() {
   lcd.setCursor(0, 3);
   lcd.print("                    ");
   delay(1000);
+  lcd.setCursor(0, 0);
+  lcd.print("PLEASE");
+  lcd.setCursor(0, 1);
+  lcd.print("WAIT WHILE");
+  lcd.setCursor(0, 2);
+  lcd.print("READING");
+  lcd.setCursor(0, 3);
+  lcd.print("DATA");
+  delay(2000);
 }
-
 void loop() {
-  
+  int boottime = int(millis());
+  ///////////////////////////////////////////////////////////
   dht1.begin();
-  delay(5000);
+  delay(10000);
   float h1 = dht1.readHumidity();
+  delay(10000);
   float t1 = dht1.readTemperature();
-  if (isnan(h1) || isnan(t1)) {
-    Serial.println(F("Failed to read from DHT sensor1!"));
-    h1 = t1 = 404;
+  if (isnan(h1)) {
+    Serial.println(("Failed to read from DHT sensor1!"));
+    h1 = 404;
+  }
+  if (isnan(t1)) {
+    Serial.println(("Failed to read from DHT sensor1!"));
+    t1 = 404;
   }
   float h1ic = dht1.computeHeatIndex(t1, h1, false);
-  lcd.setCursor(0, 0);
-  lcd.print("                    ");
-  lcd.setCursor(0, 1);
-  lcd.print("                    ");
-  lcd.setCursor(0, 2);
-  lcd.print("                    ");
-  lcd.setCursor(0, 3);
-  lcd.print("                    ");
-  delay(2000);
-  lcd.setCursor(0, 0);
-  lcd.print("Room="+room1);
-  lcd.setCursor(0, 1);
-  lcd.print("Temperature="+String(t1)+"'C");
-  lcd.setCursor(0, 2);
-  lcd.print("Humidity="+String(h1)+"%");
-  lcd.setCursor(0, 3);
-  lcd.print("Feels Like="+String(h1ic)+"'C");
-  delay(5000);
-  Serial.println("Temprature 1");
+  Serial.println("Temprature IN "+room1);
   Serial.println(t1);
-  Serial.println("Humidity 1");
+  Serial.println("Humidity IN "+room1);
   Serial.println(h1);
+  Serial.println("Feels Like="+String(h1ic)+"'C IN "+room1);
   ///////////////////////////////////////////////////////////
-  
+  ///////////////////////////////////////////////////////////
   dht2.begin();
-  delay(5000);
+  delay(10000);
   float h2 = dht2.readHumidity();
+  delay(10000);
   float t2 = dht2.readTemperature();
-  if (isnan(h2) || isnan(t2)) {
-    Serial.println(F("Failed to read from DHT sensor2!"));
-    h2 = t2 = 404;
+  if (isnan(h2)) {
+    Serial.println(("Failed to read from DHT sensor2!"));
+    h2 = 404;
+  }
+  if (isnan(t2)) {
+    Serial.println(("Failed to read from DHT sensor2!"));
+    t2 = 404;
   }
   float h2ic = dht2.computeHeatIndex(t2, h2, false);
-  lcd.setCursor(0, 0);
-  lcd.print("                    ");
-  lcd.setCursor(0, 1);
-  lcd.print("                    ");
-  lcd.setCursor(0, 2);
-  lcd.print("                    ");
-  lcd.setCursor(0, 3);
-  lcd.print("                    ");
-  delay(1000);
-  lcd.setCursor(0, 0);
-  lcd.print("Room="+room2);
-  lcd.setCursor(0, 1);
-  lcd.print("Temperature="+String(t2)+"'C");
-  lcd.setCursor(0, 2);
-  lcd.print("Humidity="+String(h2)+"%");
-  lcd.setCursor(0, 3);
-  lcd.print("Feels Like="+String(h2ic)+"'C");
-  delay(5000);
-  Serial.println("Temprature 2");
+  Serial.println("Temprature IN "+room2);
   Serial.println(t2);
-  Serial.println("Humidity 2");
+  Serial.println("Humidity IN "+room2);
   Serial.println(h2);
+  Serial.println("Feels Like="+String(h2ic)+"'C IN "+room2);
+  ///////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////
   dht3.begin();
-  delay(5000);
+  delay(10000);
   float h3 = dht3.readHumidity();
+  delay(10000);
   float t3 = dht3.readTemperature();
-  if (isnan(h3) || isnan(t3)) {
-    Serial.println(F("Failed to read from DHT sensor3!"));
-    h3 = t3 = 404;
-    //return;
+  if (isnan(h3)) {
+    Serial.println(("Failed to read from DHT sensor3!"));
+    h3 = 404;
+  }
+  if (isnan(t3)) {
+    Serial.println(("Failed to read from DHT sensor3!"));
+    t3 = 404;
   }
   float h3ic = dht3.computeHeatIndex(t3, h3, false);
-  lcd.setCursor(0, 0);
-  lcd.print("                    ");
-  lcd.setCursor(0, 1);
-  lcd.print("                    ");
-  lcd.setCursor(0, 2);
-  lcd.print("                    ");
-  lcd.setCursor(0, 3);
-  lcd.print("                    ");
-  delay(1000);
-  lcd.setCursor(0, 0);
-  lcd.print("Room="+room3);
-  lcd.setCursor(0, 1);
-  lcd.print("Temperature="+String(t3)+"'C");
-  lcd.setCursor(0, 2);
-  lcd.print("Humidity="+String(h3)+"%");
-  lcd.setCursor(0, 3);
-  lcd.print("Feels Like="+String(h3ic)+"'C");
-  delay(5000);
-  Serial.println("Temprature 3");
+  Serial.println("Temprature IN "+room3);
   Serial.println(t3);
-  Serial.println("Humidity 3");
+  Serial.println("Humidity IN "+room3);
   Serial.println(h3);
+  Serial.println("Feels Like="+String(h3ic)+"'C IN "+room3);
+  ///////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////
   dht4.begin();
-  delay(5000);
+  delay(10000);
   float h4 = dht4.readHumidity();
+  delay(10000);
   float t4 = dht4.readTemperature();
-  if (isnan(h4) || isnan(t4)) {
-    Serial.println(F("Failed to read from DHT sensor4!"));
-    h4 = t4 = 404;
-    //return;
+  if (isnan(h4)) {
+    Serial.println(("Failed to read from DHT sensor4!"));
+    h4 = 404;
+  }
+  if (isnan(t4)) {
+    Serial.println(("Failed to read from DHT sensor4!"));
+    t4 = 404;
   }
   float h4ic = dht4.computeHeatIndex(t4, h4, false);
-  lcd.setCursor(0, 0);
-  lcd.print("                    ");
-  lcd.setCursor(0, 1);
-  lcd.print("                    ");
-  lcd.setCursor(0, 2);
-  lcd.print("                    ");
-  lcd.setCursor(0, 3);
-  lcd.print("                    ");
-  delay(1000);
-  lcd.setCursor(0, 0);
-  lcd.print("Room="+room4);
-  lcd.setCursor(0, 1);
-  lcd.print("Temperature="+String(t4)+"'C");
-  lcd.setCursor(0, 2);
-  lcd.print("Humidity="+String(h4)+"%");
-  lcd.setCursor(0, 3);
-  lcd.print("Feels Like="+String(h4ic)+"'C");
-  delay(5000);
-  Serial.println("Temprature 4");
+  Serial.println("Temprature IN "+room4);
   Serial.println(t4);
-  Serial.println("Humidity 4");
+  Serial.println("Humidity IN "+room4);
   Serial.println(h4);
+  Serial.println("Feels Like="+String(h4ic)+"'C IN "+room4);
+  ///////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////
   dht5.begin();
-  delay(5000);
+  delay(10000);
   float h5 = dht5.readHumidity();
+  delay(10000);
   float t5 = dht5.readTemperature();
-  if (isnan(h5) || isnan(t5)) {
-    Serial.println(F("Failed to read from DHT sensor5!"));
-    h5 = t5 = 404;
-    //return;
+  if (isnan(h5)) {
+    Serial.println(("Failed to read from DHT sensor5!"));
+    h5 = 404;
+  }
+  if (isnan(t5)) {
+    Serial.println(("Failed to read from DHT sensor5!"));
+    t5 = 404;
   }
   float h5ic = dht5.computeHeatIndex(t5, h5, false);
-  lcd.setCursor(0, 0);
-  lcd.print("                    ");
-  lcd.setCursor(0, 1);
-  lcd.print("                    ");
-  lcd.setCursor(0, 2);
-  lcd.print("                    ");
-  lcd.setCursor(0, 3);
-  lcd.print("                    ");
-  delay(1000);
-  lcd.setCursor(0, 0);
-  lcd.print("Room="+room5);
-  lcd.setCursor(0, 1);
-  lcd.print("Temperature="+String(t5)+"'C");
-  lcd.setCursor(0, 2);
-  lcd.print("Humidity="+String(h5)+"%");
-  lcd.setCursor(0, 3);
-  lcd.print("Feels Like="+String(h5ic)+"'C");
-  delay(5000);
-  Serial.println("Temprature 5");
+  Serial.println("Temprature IN "+room5);
   Serial.println(t5);
-  Serial.println("Humidity 5");
+  Serial.println("Humidity IN "+room5);
   Serial.println(h5);
+  Serial.println("Feels Like="+String(h5ic)+"'C IN "+room5);
   ///////////////////////////////////////////////////////////
-  dht6.begin();
-  delay(5000);
-  float h6 = dht6.readHumidity();
-  float t6 = dht6.readTemperature();
-  if (isnan(h6) || isnan(t6)) {
-    Serial.println(F("Failed to read from DHT sensor6!"));
-    h6 = t6 = 404;
-    //return;
-  }
-  Serial.println("Temprature 6");
-  Serial.println(t6);
-  Serial.println("Humidity 6");
-  Serial.println(h6);
-  ///////////////////////////////////////////////////////////
-  dht7.begin();
-  delay(5000);
-  float h7 = dht7.readHumidity();
-  float t7 = dht7.readTemperature();
-  if (isnan(h7) || isnan(t7)) {
-    Serial.println(F("Failed to read from DHT sensor7!"));
-    h7 = t7 = 404;
-    //return;
-  }
-  Serial.println("Temprature 7");
-  Serial.println(t7);
-  Serial.println("Humidity 7");
-  Serial.println(h7);
   ///////////////////////////////////////////////////////////
   dht8.begin();
-  delay(5000);
+  delay(10000);
   float h8 = dht8.readHumidity();
+  delay(10000);
   float t8 = dht8.readTemperature();
-  if (isnan(h8) || isnan(t8)) {
-    Serial.println(F("Failed to read from DHT sensor8!"));
-    h8 = t8 = 404;
-    //return;
+  if (isnan(h8)) {
+    Serial.println(("Failed to read from DHT sensor8!"));
+    h8 = 404;
+  }
+  if (isnan(t8)) {
+    Serial.println(("Failed to read from DHT sensor8!"));
+    t8 = 404;
   }
   float h8ic = dht8.computeHeatIndex(t8, h8, false);
-  lcd.setCursor(0, 0);
-  lcd.print("                    ");
-  lcd.setCursor(0, 1);
-  lcd.print("                    ");
-  lcd.setCursor(0, 2);
-  lcd.print("                    ");
-  lcd.setCursor(0, 3);
-  lcd.print("                    ");
-  delay(1000);
-  lcd.setCursor(0, 0);
-  lcd.print("Room="+room8);
-  lcd.setCursor(0, 1);
-  lcd.print("Temperature="+String(t8)+"'C");
-  lcd.setCursor(0, 2);
-  lcd.print("Humidity="+String(h8)+"%");
-  lcd.setCursor(0, 3);
-  lcd.print("Feels Like="+String(h8ic)+"'C");
-  delay(5000);
-  Serial.println("Temprature 8");
+  Serial.println("Temprature IN "+room8);
   Serial.println(t8);
-  Serial.println("Humidity 8");
+  Serial.println("Humidity IN "+room8);
   Serial.println(h8);
+  Serial.println("Feels Like="+String(h8ic)+"'C IN "+room8);
+  ///////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////
   dht9.begin();
-  delay(5000);
+  delay(10000);
   float h9 = dht9.readHumidity();
+  delay(10000);
   float t9 = dht9.readTemperature();
-  if (isnan(h9) || isnan(t9)) {
-    Serial.println(F("Failed to read from DHT sensor9!"));
-    h9 = t9 = 404;
-    //return;
+  if (isnan(h9)) {
+    Serial.println(("Failed to read from DHT sensor9!"));
+    h9 = 404;
+  }
+  if (isnan(t9)) {
+    Serial.println(("Failed to read from DHT sensor9!"));
+    t9 = 404;
   }
   float h9ic = dht9.computeHeatIndex(t9, h9, false);
-  lcd.setCursor(0, 0);
-  lcd.print("                    ");
-  lcd.setCursor(0, 1);
-  lcd.print("                    ");
-  lcd.setCursor(0, 2);
-  lcd.print("                    ");
-  lcd.setCursor(0, 3);
-  lcd.print("                    ");
-  delay(1000);
-  lcd.setCursor(0, 0);
-  lcd.print("Room="+room9);
-  lcd.setCursor(0, 1);
-  lcd.print("Temperature="+String(t9)+"'C");
-  lcd.setCursor(0, 2);
-  lcd.print("Humidity="+String(h9)+"%");
-  lcd.setCursor(0, 3);
-  lcd.print("Feels Like="+String(h9ic)+"'C");
-  delay(5000);
-  Serial.println("Temprature 9");
+  Serial.println("Temprature IN "+room9);
   Serial.println(t9);
-  Serial.println("Humidity 9");
+  Serial.println("Humidity IN "+room9);
   Serial.println(h9);
+  Serial.println("Feels Like="+String(h9ic)+"'C IN "+room9);
+  ///////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////
   dht10.begin();
-  delay(5000);
+  delay(10000);
   float h10 = dht10.readHumidity();
+  delay(10000);
   float t10 = dht10.readTemperature();
-  if (isnan(h10) || isnan(t10)) {
-    Serial.println(F("Failed to read from DHT sensor10!"));
-    h10 = t10 = 404;
-    //return;
+  if (isnan(h10)) {
+    Serial.println(("Failed to read from DHT sensor10!"));
+    h10 = 404;
+  }
+  if (isnan(t10)) {
+    Serial.println(("Failed to read from DHT sensor10!"));
+    t10 = 404;
   }
   float h10ic = dht10.computeHeatIndex(t10, h10, false);
-  lcd.setCursor(0, 0);
-  lcd.print("                    ");
-  lcd.setCursor(0, 1);
-  lcd.print("                    ");
-  lcd.setCursor(0, 2);
-  lcd.print("                    ");
-  lcd.setCursor(0, 3);
-  lcd.print("                    ");
-  delay(1000);
-  lcd.setCursor(0, 0);
-  lcd.print("Room="+room10);
-  lcd.setCursor(0, 1);
-  lcd.print("Temperature="+String(t10)+"'C");
-  lcd.setCursor(0, 2);
-  lcd.print("Humidity="+String(h10)+"%");
-  lcd.setCursor(0, 3);
-  lcd.print("Feels Like="+String(h10ic)+"'C");
-  delay(5000);
-  Serial.println("Temprature 10");
+  Serial.println("Temprature IN "+room10);
   Serial.println(t10);
-  Serial.println("Humidity 10");
+  Serial.println("Humidity IN "+room10);
   Serial.println(h10);
+  Serial.println("Feels Like="+String(h10ic)+"'C IN "+room10);
+  ///////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////
   dht11.begin();
-  delay(5000);
+  delay(10000);
   float h11 = dht11.readHumidity();
+  delay(10000);
   float t11 = dht11.readTemperature();
-  if (isnan(h11) || isnan(t11)) {
-    Serial.println(F("Failed to read from DHT sensor11!"));
-    h11 = t11 = 404;
-    //return;
+  if (isnan(h11)) {
+    Serial.println(("Failed to read from DHT sensor11!"));
+    h11 = 404;
   }
-  float h11ic = dht11.computeHeatIndex(t11, h11, false);
-  lcd.setCursor(0, 0);
-  lcd.print("                    ");
-  lcd.setCursor(0, 1);
-  lcd.print("                    ");
-  lcd.setCursor(0, 2);
-  lcd.print("                    ");
-  lcd.setCursor(0, 3);
-  lcd.print("                    ");
-  delay(1000);
-  lcd.setCursor(0, 0);
-  lcd.print("Room="+room11);
-  lcd.setCursor(0, 1);
-  lcd.print("Temperature="+String(t11)+"'C");
-  lcd.setCursor(0, 2);
-  lcd.print("Humidity="+String(h11)+"%");
-  lcd.setCursor(0, 3);
-  lcd.print("Feels Like="+String(h11ic)+"'C");
-  delay(5000);
-  Serial.println("Temprature 11");
+  if (isnan(t11)) {
+    Serial.println(("Failed to read from DHT sensor11!"));
+    t11 = 404;
+  }
+  float h11ic = dht10.computeHeatIndex(t11, h11, false);
+  Serial.println("Temprature IN "+room11);
   Serial.println(t11);
-  Serial.println("Humidity 11");
+  Serial.println("Humidity IN "+room11);
   Serial.println(h11);
+  Serial.println("Feels Like="+String(h11ic)+"'C IN "+room11);
   ///////////////////////////////////////////////////////////
-  dht12.begin();
-  delay(5000);
-  float h12 = dht12.readHumidity();
-  float t12 = dht12.readTemperature();
-  if (isnan(h12) || isnan(t12)) {
-    Serial.println(F("Failed to read from DHT sensor12!"));
-    h12 = t12 = 404;
-    //return;
-  }
-
-  Serial.println("Temprature 12");
-  Serial.println(t12);
-  Serial.println("Humidity 12");
-  Serial.println(h12);
   ///////////////////////////////////////////////////////////
   dht13.begin();
-  delay(5000);
+  delay(10000);
   float h13 = dht13.readHumidity();
+  delay(10000);
   float t13 = dht13.readTemperature();
-  if (isnan(h13) || isnan(t13)) {
-    Serial.println(F("Failed to read from DHT sensor13!"));
-    h13 = t13 = 404;
-    //return;
+  if (isnan(h13)) {
+    Serial.println(("Failed to read from DHT sensor13!"));
+    h13 = 404;
+  }
+  if (isnan(t13)) {
+    Serial.println(("Failed to read from DHT sensor13!"));
+    t13 = 404;
   }
   float h13ic = dht13.computeHeatIndex(t13, h13, false);
-  lcd.setCursor(0, 0);
-  lcd.print("                    ");
-  lcd.setCursor(0, 1);
-  lcd.print("                    ");
-  lcd.setCursor(0, 2);
-  lcd.print("                    ");
-  lcd.setCursor(0, 3);
-  lcd.print("                    ");
-  delay(1000);
-  lcd.setCursor(0, 0);
-  lcd.print("Room="+room13);
-  lcd.setCursor(0, 1);
-  lcd.print("Temperature="+String(t13)+"'C");
-  lcd.setCursor(0, 2);
-  lcd.print("Humidity="+String(h13)+"%");
-  lcd.setCursor(0, 3);
-  lcd.print("Feels Like="+String(h13ic)+"'C");
-  delay(5000);
-  Serial.println("Temprature 13");
+  Serial.println("Temprature IN "+room13);
   Serial.println(t13);
-  Serial.println("Humidity 13");
+  Serial.println("Humidity IN "+room13);
   Serial.println(h13);
+  Serial.println("Feels Like="+String(h13ic)+"'C IN "+room13);
+  ///////////////////////////////////////////////////////////
+
   
   ///////////////////////////////////////////////////////////
-  ///////////////////////////////////////////////////////////
+  
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
     Serial.println(".");
-    delay(500);
+    delay(1000);
     }
-  timeClient.begin();
-  timeClient.setTimeOffset(19800);
-  if(WiFi.status()== WL_CONNECTED){
+   timeClient.begin();
+   timeClient.setTimeOffset(19800);
+  
+  //if(WiFi.status()== WL_CONNECTED){
     timeClient.update();
     unsigned long epochTime = timeClient.getEpochTime();
     formattedTime = timeClient.getFormattedTime();
@@ -524,7 +373,13 @@ void loop() {
     HTTPClient http;
     http.begin(serverName, root_ca);
     http.addHeader("Content-Type", "application/x-www-form-urlencoded");
-    String httpRequestData = "api_key=tPmAT5Ab3j7F9&timedate="+timedate+"&siteLocation="+siteLocation+"&T1="+t1+"&H1="+h1+"&T2="+t2+"&H2="+h2+"&T3="+t3+"&H3="+h3+"&T4="+t4+"&H4="+h4+"&T5="+t5+"&H5="+h5+"&T6="+t6+"&H6="+h6+"&T7="+t7+"&H7="+h7+"&T8="+t8+"&H8="+h8+"&T9="+t9+"&H9="+h9+"&T10="+t10+"&H10="+h10+"&T11="+t11+"&H11="+h11+"&T12="+t12+"&H12="+h12+"&T13="+t13+"&H13="+h13+"&MAC=C4:4F:33:7A:90:55";//+String(WiFi.macAddress());
+    float h12 = 404;
+    float t12 = 404;
+    float h6 = 404;
+    float t6 = 404;
+    float h7 = 404;
+    float t7 = 404;
+    String httpRequestData = "api_key=tPmAT5Ab3j7F9&timedate="+timedate+"&siteLocation="+siteLocation+"&T1="+t1+"&H1="+h1+"&T2="+t2+"&H2="+h2+"&T3="+t3+"&H3="+h3+"&T4="+t4+"&H4="+h4+"&T5="+t5+"&H5="+h5+"&T6="+t6+"&H6="+h6+"&T7="+t7+"&H7="+h7+"&T8="+t8+"&H8="+h8+"&T9="+t9+"&H9="+h9+"&T10="+t10+"&H10="+h10+"&T11="+t11+"&H11="+h11+"&T12="+t12+"&H12="+h12+"&T13="+t13+"&H13="+h13+"&MAC="+String(WiFi.macAddress());
     Serial.print("httpRequestData: ");
     Serial.println(httpRequestData);
     int httpResponseCode = http.POST(httpRequestData);    
@@ -536,42 +391,9 @@ void loop() {
       Serial.print("Error code: ");
       Serial.println(httpResponseCode);
     }
-    http.end();
-  }
-  else{
-    lcd.setCursor(0, 0);
-    lcd.print("                    ");
-    lcd.setCursor(0, 1);
-    lcd.print("                    ");
-    lcd.setCursor(0, 2);
-    lcd.print("                    ");
-    lcd.setCursor(0, 3);
-    lcd.print("                    ");
-    delay(1000);
-    WiFi.begin(ssid, password);
-    while (WiFi.status() != WL_CONNECTED) {
-    lcd.setCursor(0, 0);
-    lcd.print("WIFI DOWN");
-    lcd.setCursor(0, 1);
-    lcd.print("PLEASE VERIFY");
-    lcd.setCursor(0, 2);
-    lcd.print("WHETHER FENET WIFI");
-    lcd.setCursor(0, 3);
-    lcd.print("IS ON");
-    delay(2000);
-    lcd.setCursor(0, 0);
-    lcd.print("                    ");
-    lcd.setCursor(0, 1);
-    lcd.print("                    ");
-    lcd.setCursor(0, 2);
-    lcd.print("                    ");
-    lcd.setCursor(0, 3);
-    lcd.print("                    ");
-    delay(1000); 
-    }
-  }
+  http.end();
   WiFi.disconnect();
-  for(int s=0;s<=5;s++){
+  while((boottime-int(millis()))<600000){
   lcd.setCursor(0, 0);
   lcd.print("                    ");
   lcd.setCursor(0, 1);
@@ -589,7 +411,7 @@ void loop() {
   lcd.print("Humidity="+String(h1)+"%");
   lcd.setCursor(0, 3);
   lcd.print("Feels Like="+String(h1ic)+"'C");
-  delay(5000);
+  delay(10000);
   lcd.setCursor(0, 0);
   lcd.print("                    ");
   lcd.setCursor(0, 1);
@@ -607,7 +429,7 @@ void loop() {
   lcd.print("Humidity="+String(h2)+"%");
   lcd.setCursor(0, 3);
   lcd.print("Feels Like="+String(h2ic)+"'C");
-  delay(5000);
+  delay(10000);
   lcd.setCursor(0, 0);
   lcd.print("                    ");
   lcd.setCursor(0, 1);
@@ -625,7 +447,7 @@ void loop() {
   lcd.print("Humidity="+String(h3)+"%");
   lcd.setCursor(0, 3);
   lcd.print("Feels Like="+String(h3ic)+"'C");
-  delay(5000);
+  delay(10000);
   lcd.setCursor(0, 0);
   lcd.print("                    ");
   lcd.setCursor(0, 1);
@@ -643,8 +465,8 @@ void loop() {
   lcd.print("Humidity="+String(h4)+"%");
   lcd.setCursor(0, 3);
   lcd.print("Feels Like="+String(h4ic)+"'C");
-  delay(5000);
-    lcd.setCursor(0, 0);
+  delay(10000);
+  lcd.setCursor(0, 0);
   lcd.print("                    ");
   lcd.setCursor(0, 1);
   lcd.print("                    ");
@@ -661,7 +483,7 @@ void loop() {
   lcd.print("Humidity="+String(h5)+"%");
   lcd.setCursor(0, 3);
   lcd.print("Feels Like="+String(h5ic)+"'C");
-  delay(5000);
+  delay(10000);
   lcd.setCursor(0, 0);
   lcd.print("                    ");
   lcd.setCursor(0, 1);
@@ -679,7 +501,7 @@ void loop() {
   lcd.print("Humidity="+String(h8)+"%");
   lcd.setCursor(0, 3);
   lcd.print("Feels Like="+String(h8ic)+"'C");
-  delay(5000);
+  delay(10000);
   lcd.setCursor(0, 0);
   lcd.print("                    ");
   lcd.setCursor(0, 1);
@@ -697,7 +519,7 @@ void loop() {
   lcd.print("Humidity="+String(h9)+"%");
   lcd.setCursor(0, 3);
   lcd.print("Feels Like="+String(h9ic)+"'C");
-  delay(5000);
+  delay(10000);
   lcd.setCursor(0, 0);
   lcd.print("                    ");
   lcd.setCursor(0, 1);
@@ -715,7 +537,7 @@ void loop() {
   lcd.print("Humidity="+String(h10)+"%");
   lcd.setCursor(0, 3);
   lcd.print("Feels Like="+String(h10ic)+"'C");
-  delay(5000);
+  delay(10000);
   lcd.setCursor(0, 0);
   lcd.print("                    ");
   lcd.setCursor(0, 1);
@@ -733,7 +555,7 @@ void loop() {
   lcd.print("Humidity="+String(h11)+"%");
   lcd.setCursor(0, 3);
   lcd.print("Feels Like="+String(h11ic)+"'C");
-  delay(5000);
+  delay(10000);
   lcd.setCursor(0, 0);
   lcd.print("                    ");
   lcd.setCursor(0, 1);
@@ -751,7 +573,7 @@ void loop() {
   lcd.print("Humidity="+String(h13)+"%");
   lcd.setCursor(0, 3);
   lcd.print("Feels Like="+String(h13ic)+"'C");
-  delay(5000);
+  delay(10000);
   lcd.setCursor(0, 0);
   lcd.print("                    ");
   lcd.setCursor(0, 1);
