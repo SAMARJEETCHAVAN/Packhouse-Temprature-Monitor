@@ -42,7 +42,7 @@ DHT dht7(DHTPIN7, DHTTYPE7);
 DHT dht8(DHTPIN8, DHTTYPE8);
 DHT dht9(DHTPIN9, DHTTYPE9);
 DHT dht10(DHTPIN10, DHTTYPE10);
-DHT dht11(DHTPIN11, DHTTYPE11);
+DHT dht011(16, DHT22);
 DHT dht12(DHTPIN12, DHTTYPE12);
 DHT dht13(DHTPIN13, DHTTYPE13);
 
@@ -138,6 +138,28 @@ void setup() {
 }
 void loop() {
   int boottime = int(millis());
+  ///////////////////////////////////////////////////////////
+  dht011.begin();
+  delay(10000);
+  float t11 = dht011.readTemperature();
+  //delay(10000);
+  float h11 = dht011.readHumidity();
+  if (isnan(h11)) {
+    Serial.println(("Failed to read from DHT sensor11!"));
+    h11 = 404;
+  }
+  if (isnan(t11)) {
+    Serial.println(("Failed to read from DHT sensor11!"));
+    t11 = 404;
+  }
+  float h11ic = dht011.computeHeatIndex(t11, h11, false);
+  Serial.println("Temprature IN "+room11);
+  Serial.println(t11);
+  Serial.println("Humidity IN "+room11);
+  Serial.println(h11);
+  Serial.println("Feels Like="+String(h11ic)+"'C IN "+room11);
+  ///////////////////////////////////////////////////////////
+  
   ///////////////////////////////////////////////////////////
   dht1.begin();
   delay(10000);
@@ -305,27 +327,6 @@ void loop() {
   Serial.println("Humidity IN "+room10);
   Serial.println(h10);
   Serial.println("Feels Like="+String(h10ic)+"'C IN "+room10);
-  ///////////////////////////////////////////////////////////
-  ///////////////////////////////////////////////////////////
-  dht11.begin();
-  delay(10000);
-  float h11 = dht11.readHumidity();
-  delay(10000);
-  float t11 = dht11.readTemperature();
-  if (isnan(h11)) {
-    Serial.println(("Failed to read from DHT sensor11!"));
-    h11 = 404;
-  }
-  if (isnan(t11)) {
-    Serial.println(("Failed to read from DHT sensor11!"));
-    t11 = 404;
-  }
-  float h11ic = dht10.computeHeatIndex(t11, h11, false);
-  Serial.println("Temprature IN "+room11);
-  Serial.println(t11);
-  Serial.println("Humidity IN "+room11);
-  Serial.println(h11);
-  Serial.println("Feels Like="+String(h11ic)+"'C IN "+room11);
   ///////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////
   dht13.begin();
