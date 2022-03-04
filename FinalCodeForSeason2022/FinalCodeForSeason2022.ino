@@ -65,7 +65,7 @@ String room12 = "Room 12";
 String room6 = "Room 6";
 String room7 = "Room 7";
 String timedate = "00:00:00";
-String formattedTime = "00:00:00";//timeClient.getFormattedTime(); 
+String formattedTime = "00:00:00";//timeClient.getFormattedTime();
 int monthDay = 0;//ptm->tm_mday;
 int currentMonth = 0;//ptm->tm_mon+1;
 int currentYear = 0;//ptm->tm_year+1900;
@@ -114,7 +114,7 @@ WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "asia.pool.ntp.org");
 void setup() {
   Serial.begin(115200);
-  lcd.init();                      
+  lcd.init();
   lcd.backlight();
   Wire.setClock(10000);
   lcd.setCursor(0, 0);
@@ -159,7 +159,7 @@ void loop() {
   Serial.println(h11);
   Serial.println("Feels Like="+String(h11ic)+"'C IN "+room11);
   ///////////////////////////////////////////////////////////
-  
+
   ///////////////////////////////////////////////////////////
   dht1.begin();
   delay(10000);
@@ -350,9 +350,9 @@ void loop() {
   Serial.println("Feels Like="+String(h13ic)+"'C IN "+room13);
   ///////////////////////////////////////////////////////////
 
-  
+
   ///////////////////////////////////////////////////////////
-  
+
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
     Serial.println(".");
@@ -360,12 +360,12 @@ void loop() {
     }
    timeClient.begin();
    timeClient.setTimeOffset(19800);
-  
+
   //if(WiFi.status()== WL_CONNECTED){
     timeClient.update();
     unsigned long epochTime = timeClient.getEpochTime();
     formattedTime = timeClient.getFormattedTime();
-    struct tm *ptm = gmtime ((time_t *)&epochTime); 
+    struct tm *ptm = gmtime ((time_t *)&epochTime);
     monthDay = ptm->tm_mday;
     currentMonth = ptm->tm_mon+1;
     currentYear = ptm->tm_year+1900;
@@ -380,10 +380,10 @@ void loop() {
     float t6 = 404;
     float h7 = 404;
     float t7 = 404;
-    String httpRequestData = "api_key=tPmAT5Ab3j7F9&timedate="+timedate+"&siteLocation="+siteLocation+"&T1="+t1+"&H1="+h1+"&T2="+t2+"&H2="+h2+"&T3="+t3+"&H3="+h3+"&T4="+t4+"&H4="+h4+"&T5="+t5+"&H5="+h5+"&T6="+t6+"&H6="+h6+"&T7="+t7+"&H7="+h7+"&T8="+t8+"&H8="+h8+"&T9="+t9+"&H9="+h9+"&T10="+t10+"&H10="+h10+"&T11="+t11+"&H11="+h11+"&T12="+t12+"&H12="+h12+"&T13="+t13+"&H13="+h13+"&MAC="+String(WiFi.macAddress());
+    String httpRequestData = "api_key=tPmAT5Ab3j7F9&timedate="+timedate+"&siteLocation="+siteLocation+"&T1="+String(t1)+"&H1="+String(h1)+"&T2="+String(t2)+"&H2="+String(h2)+"&T3="+String(t3)+"&H3="+String(h3)+"&T4="+String(t4)+"&H4="+String(h4)+"&T5="+String(t5)+"&H5="+String(h5)+"&T6="+String(t6)+"&H6="+String(h6)+"&T7="+String(t7)+"&H7="+String(h7)+"&T8="+String(t8)+"&H8="+String(h8)+"&T9="+String(t9)+"&H9="+String(h9)+"&T10="+String(t10)+"&H10="+String(h10)+"&T11="+String(t11)+"&H11="+String(h11)+"&T12="+String(t12)+"&H12="+String(h12)+"&T13="+String(t13)+"&H13="+String(h13)+"&MAC="+String(WiFi.macAddress());
     Serial.print("httpRequestData: ");
     Serial.println(httpRequestData);
-    int httpResponseCode = http.POST(httpRequestData);    
+    int httpResponseCode = http.POST(httpRequestData);
     if (httpResponseCode>0) {
       Serial.print("HTTP Response code: ");
       Serial.println(httpResponseCode);
