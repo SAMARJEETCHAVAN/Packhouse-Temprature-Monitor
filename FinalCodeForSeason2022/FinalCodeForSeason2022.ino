@@ -394,7 +394,34 @@ void loop() {
     }
   http.end();
   WiFi.disconnect();
+  
   while((boottime-int(millis()))<600000){
+  lcd.setCursor(0, 0);
+  lcd.print("                    ");
+  lcd.setCursor(0, 1);
+  lcd.print("                    ");
+  lcd.setCursor(0, 2);
+  lcd.print("                    ");
+  lcd.setCursor(0, 3);
+  lcd.print("                    ");
+  delay(1000);
+  lcd.setCursor(0, 0);
+  lcd.print("HTTPcode:"+String(httpResponseCode));
+  lcd.setCursor(0, 1);
+  lcd.print(timedate);
+  if(httpResponseCode==200){
+  lcd.setCursor(0, 2);
+  lcd.print("Upload was ");
+  lcd.setCursor(0, 3);
+  lcd.print("Sucessful");
+  }
+  else{
+  lcd.setCursor(0, 2);
+  lcd.print("Upload was ");
+  lcd.setCursor(0, 3);
+  lcd.print("Unsucessful");
+  }
+  delay(10000);
   lcd.setCursor(0, 0);
   lcd.print("                    ");
   lcd.setCursor(0, 1);
