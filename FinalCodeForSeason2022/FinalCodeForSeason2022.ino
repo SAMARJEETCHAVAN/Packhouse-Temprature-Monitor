@@ -380,7 +380,7 @@ void loop() {
     float t6 = 404;
     float h7 = 404;
     float t7 = 404;
-    String httpRequestData = "api_key=tPmAT5Ab3j7F9&timedate="+timedate+"&siteLocation="+siteLocation+"&T1="+String(t1)+"&H1="+String(h1)+"&T2="+String(t2)+"&H2="+String(h2)+"&T3="+String(t3)+"&H3="+String(h3)+"&T4="+String(t4)+"&H4="+String(h4)+"&T5="+String(t5)+"&H5="+String(h5)+"&T6="+String(t6)+"&H6="+String(h6)+"&T7="+String(t7)+"&H7="+String(h7)+"&T8="+String(t8)+"&H8="+String(h8)+"&T9="+String(t9)+"&H9="+String(h9)+"&T10="+String(t10)+"&H10="+String(h10)+"&T11="+String(t11)+"&H11="+String(h11)+"&T12="+String(t12)+"&H12="+String(h12)+"&T13="+String(t13)+"&H13="+String(h13)+"&MAC="+String(WiFi.macAddress());
+    String httpRequestData = "api_key=tPmAT5Ab3j7F9&timedate="+String(timedate)+"&siteLocation="+siteLocation+"&T1="+String(t1)+"&H1="+String(h1)+"&T2="+String(t2)+"&H2="+String(h2)+"&T3="+String(t3)+"&H3="+String(h3)+"&T4="+String(t4)+"&H4="+String(h4)+"&T5="+String(t5)+"&H5="+String(h5)+"&T6="+String(t6)+"&H6="+String(h6)+"&T7="+String(t7)+"&H7="+String(h7)+"&T8="+String(t8)+"&H8="+String(h8)+"&T9="+String(t9)+"&H9="+String(h9)+"&T10="+String(t10)+"&H10="+String(h10)+"&T11="+String(t11)+"&H11="+String(h11)+"&T12="+String(t12)+"&H12="+String(h12)+"&T13="+String(t13)+"&H13="+String(h13)+"&MAC="+String(WiFi.macAddress());
     Serial.print("httpRequestData: ");
     Serial.println(httpRequestData);
     int httpResponseCode = http.POST(httpRequestData);
