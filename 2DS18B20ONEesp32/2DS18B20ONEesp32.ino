@@ -1,4 +1,5 @@
-#include "DHT.h"
+
+/*#include "DHT.h"
 #include <WiFi.h>
 #include <NTPClient.h>
 #include <LiquidCrystal_I2C.h>
@@ -633,4 +634,30 @@ void loop() {
   lcd.print("                    ");
   delay(1000);
   }
+}
+
+*/
+
+
+#include <OneWire.h>
+#include <DallasTemperature.h>
+#define ONE_WIRE_BUS 02
+OneWire oneWire(ONE_WIRE_BUS);
+DallasTemperature sensors(&oneWire);
+DeviceAddress sensor1 = { 0x28, 0x29, 0xC0, 0x3, 0x50, 0x20, 0x1, 0x70 };
+DeviceAddress sensor2 = { 0x28, 0x53, 0x51, 0x10, 0x16, 0x19, 0x3, 0x2E };
+void setup(void){
+  Serial.begin(115200);
+  sensors.begin();
+}
+
+void loop(void){ 
+  Serial.print("Requesting temperatures...");
+  sensors.requestTemperatures(); 
+  Serial.println("DONE");
+  Serial.print("Sensor 1(*C): ");
+  Serial.print(sensors.getTempC(sensor1)); 
+  Serial.print("Sensor 2(*C): ");
+  Serial.print(sensors.getTempC(sensor2));  
+  delay(2000);
 }
