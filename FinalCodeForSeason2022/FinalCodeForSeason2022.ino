@@ -601,8 +601,11 @@ void loop() {
     }
   http.end();
   WiFi.disconnect();
+  Serial.println(int(millis())-boottime);
   
-  while((boottime-int(millis()))<600000){
+  while((int(millis())-boottime)<600000){
+  
+  Serial.println(int(millis())-boottime);
   lcd.setCursor(0, 0);
   lcd.print("                    ");
   lcd.setCursor(0, 1);
@@ -811,6 +814,25 @@ void loop() {
   lcd.print("                    ");
   lcd.setCursor(0, 3);
   lcd.print("                    ");
+  delay(10000);
+  lcd.setCursor(0, 0);
+  lcd.print("                    ");
+  lcd.setCursor(0, 1);
+  lcd.print("                    ");
+  lcd.setCursor(0, 2);
+  lcd.print("                    ");
+  lcd.setCursor(0, 3);
+  lcd.print("                    ");
   delay(1000);
+  lcd.setCursor(0, 0);
+  lcd.print("Device was started at");
+  lcd.setCursor(0, 1);
+  lcd.print(String(boottime));
+  lcd.setCursor(0, 2);
+  lcd.print("Next read in ");
+  lcd.setCursor(0, 3);
+  lcd.print(String(600000-int(boottime)-int(millis())));
+  delay(10000);
+  
   }
 }
