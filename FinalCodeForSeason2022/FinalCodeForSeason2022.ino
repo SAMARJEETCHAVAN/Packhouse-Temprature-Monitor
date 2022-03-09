@@ -127,14 +127,14 @@ void setup() {
   lcd.print("                    ");
   delay(1000);
   lcd.setCursor(0, 0);
-  lcd.print("PLEASE");
+  lcd.print("Reading");
   lcd.setCursor(0, 1);
-  lcd.print("WAIT WHILE");
+  lcd.print("SENSOR");
   lcd.setCursor(0, 2);
-  lcd.print("READING");
+  lcd.print("@");
   lcd.setCursor(0, 3);
-  lcd.print("DATA");
-  delay(2000);
+  lcd.print(String(room11));
+  delay(1000);
 }
 void loop() {
   int boottime = int(millis());
@@ -158,6 +158,24 @@ void loop() {
   Serial.println("Humidity IN "+room11);
   Serial.println(h11);
   Serial.println("Feels Like="+String(h11ic)+"'C IN "+room11);
+  lcd.setCursor(0, 0);
+  lcd.print("                    ");
+  lcd.setCursor(0, 1);
+  lcd.print("                    ");
+  lcd.setCursor(0, 2);
+  lcd.print("                    ");
+  lcd.setCursor(0, 3);
+  lcd.print("                    ");
+  delay(1000);
+  lcd.setCursor(0, 0);
+  lcd.print("Temp@"+room11);
+  lcd.setCursor(0, 1);
+  lcd.print(String(t11));
+  lcd.setCursor(0, 2);
+  lcd.print("Reading SENSOR @");
+  lcd.setCursor(0, 3);
+  lcd.print(String(room1));
+  delay(1000);
   ///////////////////////////////////////////////////////////
 
   ///////////////////////////////////////////////////////////
@@ -180,6 +198,24 @@ void loop() {
   Serial.println("Humidity IN "+room1);
   Serial.println(h1);
   Serial.println("Feels Like="+String(h1ic)+"'C IN "+room1);
+  lcd.setCursor(0, 0);
+  lcd.print("                    ");
+  lcd.setCursor(0, 1);
+  lcd.print("                    ");
+  lcd.setCursor(0, 2);
+  lcd.print("                    ");
+  lcd.setCursor(0, 3);
+  lcd.print("                    ");
+  delay(1000);
+  lcd.setCursor(0, 0);
+  lcd.print("Temp@"+room1);
+  lcd.setCursor(0, 1);
+  lcd.print(String(t1));
+  lcd.setCursor(0, 2);
+  lcd.print("Reading SENSOR @");
+  lcd.setCursor(0, 3);
+  lcd.print(String(room2));
+  delay(1000);
   ///////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////
   dht2.begin();
@@ -201,6 +237,24 @@ void loop() {
   Serial.println("Humidity IN "+room2);
   Serial.println(h2);
   Serial.println("Feels Like="+String(h2ic)+"'C IN "+room2);
+  lcd.setCursor(0, 0);
+  lcd.print("                    ");
+  lcd.setCursor(0, 1);
+  lcd.print("                    ");
+  lcd.setCursor(0, 2);
+  lcd.print("                    ");
+  lcd.setCursor(0, 3);
+  lcd.print("                    ");
+  delay(1000);
+  lcd.setCursor(0, 0);
+  lcd.print("Temp@"+room2);
+  lcd.setCursor(0, 1);
+  lcd.print(String(t2));
+  lcd.setCursor(0, 2);
+  lcd.print("Reading SENSOR @");
+  lcd.setCursor(0, 3);
+  lcd.print(String(room3));
+  delay(1000);
   ///////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////
   dht3.begin();
@@ -222,6 +276,24 @@ void loop() {
   Serial.println("Humidity IN "+room3);
   Serial.println(h3);
   Serial.println("Feels Like="+String(h3ic)+"'C IN "+room3);
+  lcd.setCursor(0, 0);
+  lcd.print("                    ");
+  lcd.setCursor(0, 1);
+  lcd.print("                    ");
+  lcd.setCursor(0, 2);
+  lcd.print("                    ");
+  lcd.setCursor(0, 3);
+  lcd.print("                    ");
+  delay(1000);
+  lcd.setCursor(0, 0);
+  lcd.print("Temp@"+room3);
+  lcd.setCursor(0, 1);
+  lcd.print(String(t3));
+  lcd.setCursor(0, 2);
+  lcd.print("Reading SENSOR @");
+  lcd.setCursor(0, 3);
+  lcd.print(String(room4));
+  delay(1000);
   ///////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////
   dht4.begin();
@@ -243,6 +315,24 @@ void loop() {
   Serial.println("Humidity IN "+room4);
   Serial.println(h4);
   Serial.println("Feels Like="+String(h4ic)+"'C IN "+room4);
+  lcd.setCursor(0, 0);
+  lcd.print("                    ");
+  lcd.setCursor(0, 1);
+  lcd.print("                    ");
+  lcd.setCursor(0, 2);
+  lcd.print("                    ");
+  lcd.setCursor(0, 3);
+  lcd.print("                    ");
+  delay(1000);
+  lcd.setCursor(0, 0);
+  lcd.print("Temp@"+room4);
+  lcd.setCursor(0, 1);
+  lcd.print(String(t4));
+  lcd.setCursor(0, 2);
+  lcd.print("Reading SENSOR @");
+  lcd.setCursor(0, 3);
+  lcd.print(String(room5));
+  delay(1000);
   ///////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////
   dht5.begin();
@@ -264,6 +354,24 @@ void loop() {
   Serial.println("Humidity IN "+room5);
   Serial.println(h5);
   Serial.println("Feels Like="+String(h5ic)+"'C IN "+room5);
+  lcd.setCursor(0, 0);
+  lcd.print("                    ");
+  lcd.setCursor(0, 1);
+  lcd.print("                    ");
+  lcd.setCursor(0, 2);
+  lcd.print("                    ");
+  lcd.setCursor(0, 3);
+  lcd.print("                    ");
+  delay(1000);
+  lcd.setCursor(0, 0);
+  lcd.print("Temp@"+room5);
+  lcd.setCursor(0, 1);
+  lcd.print(String(t5));
+  lcd.setCursor(0, 2);
+  lcd.print("Reading SENSOR @");
+  lcd.setCursor(0, 3);
+  lcd.print(String(room8));
+  delay(1000);
   ///////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////
   dht8.begin();
@@ -285,6 +393,24 @@ void loop() {
   Serial.println("Humidity IN "+room8);
   Serial.println(h8);
   Serial.println("Feels Like="+String(h8ic)+"'C IN "+room8);
+  lcd.setCursor(0, 0);
+  lcd.print("                    ");
+  lcd.setCursor(0, 1);
+  lcd.print("                    ");
+  lcd.setCursor(0, 2);
+  lcd.print("                    ");
+  lcd.setCursor(0, 3);
+  lcd.print("                    ");
+  delay(1000);
+  lcd.setCursor(0, 0);
+  lcd.print("Temp@"+room8);
+  lcd.setCursor(0, 1);
+  lcd.print(String(t8));
+  lcd.setCursor(0, 2);
+  lcd.print("Reading SENSOR @");
+  lcd.setCursor(0, 3);
+  lcd.print(String(room9));
+  delay(1000);
   ///////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////
   dht9.begin();
@@ -306,6 +432,24 @@ void loop() {
   Serial.println("Humidity IN "+room9);
   Serial.println(h9);
   Serial.println("Feels Like="+String(h9ic)+"'C IN "+room9);
+  lcd.setCursor(0, 0);
+  lcd.print("                    ");
+  lcd.setCursor(0, 1);
+  lcd.print("                    ");
+  lcd.setCursor(0, 2);
+  lcd.print("                    ");
+  lcd.setCursor(0, 3);
+  lcd.print("                    ");
+  delay(1000);
+  lcd.setCursor(0, 0);
+  lcd.print("Temp@"+room9);
+  lcd.setCursor(0, 1);
+  lcd.print(String(t9));
+  lcd.setCursor(0, 2);
+  lcd.print("Reading SENSOR @");
+  lcd.setCursor(0, 3);
+  lcd.print(String(room10));
+  delay(1000);
   ///////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////
   dht10.begin();
@@ -327,6 +471,24 @@ void loop() {
   Serial.println("Humidity IN "+room10);
   Serial.println(h10);
   Serial.println("Feels Like="+String(h10ic)+"'C IN "+room10);
+  lcd.setCursor(0, 0);
+  lcd.print("                    ");
+  lcd.setCursor(0, 1);
+  lcd.print("                    ");
+  lcd.setCursor(0, 2);
+  lcd.print("                    ");
+  lcd.setCursor(0, 3);
+  lcd.print("                    ");
+  delay(1000);
+  lcd.setCursor(0, 0);
+  lcd.print("Temp@"+room10);
+  lcd.setCursor(0, 1);
+  lcd.print(String(t10));
+  lcd.setCursor(0, 2);
+  lcd.print("Reading SENSOR @");
+  lcd.setCursor(0, 3);
+  lcd.print(String(room13));
+  delay(1000);
   ///////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////
   dht13.begin();
@@ -348,6 +510,24 @@ void loop() {
   Serial.println("Humidity IN "+room13);
   Serial.println(h13);
   Serial.println("Feels Like="+String(h13ic)+"'C IN "+room13);
+  lcd.setCursor(0, 0);
+  lcd.print("                    ");
+  lcd.setCursor(0, 1);
+  lcd.print("                    ");
+  lcd.setCursor(0, 2);
+  lcd.print("                    ");
+  lcd.setCursor(0, 3);
+  lcd.print("                    ");
+  delay(1000);
+  lcd.setCursor(0, 0);
+  lcd.print("Temp@"+room13);
+  lcd.setCursor(0, 1);
+  lcd.print(String(t13));
+  lcd.setCursor(0, 2);
+  lcd.print("TRYING TO");
+  lcd.setCursor(0, 3);
+  lcd.print("UPLOAD DATA");
+  delay(1000);
   ///////////////////////////////////////////////////////////
 
 
