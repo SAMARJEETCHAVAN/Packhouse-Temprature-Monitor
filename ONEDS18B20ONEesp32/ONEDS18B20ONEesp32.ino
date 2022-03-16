@@ -1,22 +1,15 @@
-
 #include <OneWire.h>
 #include <DallasTemperature.h>
-#include "DHT.h"
 #include <WiFi.h>
 #include <NTPClient.h>
 #include <WiFiUdp.h>
 #include <WiFiClient.h>
 #include <HTTPClient.h>
-#define DHTPIN 26
-#define DHTTYPE DHT22
-DHT dht(DHTPIN, DHTTYPE);
 const int oneWireBus = 27;     
 OneWire oneWire(oneWireBus);
 DallasTemperature sensors(&oneWire);
 WiFiUDP ntpUDP;
-
 NTPClient timeClient(ntpUDP,"asia.pool.ntp.org", 19800, 60000);
-
 const char *ssid     = "FENET";
 const char *password = "12345678";
 const char* serverName = "https://www.feweather.com/post-packhouse-data.php";
@@ -70,54 +63,33 @@ void setup() {
     Serial.println(s);
     delay(1000);
     }
-  dht.begin();
   sensors.begin();
 }
 void loop() {
-  //float t3 = dht.readTemperature();
-  //float h3 = dht.readHumidity();
   sensors.requestTemperatures(); 
   float temperatureC = sensors.getTempCByIndex(0);
-  /*if (isnan(h3)) {
-    h3 = 404.00;
-    }
-  if (isnan(t3)) {
-    t3 = 404;
-    }
-  if (temperatureC = -127.00) {
-    temperatureC = 404.00;
-    }*/
-  //Serial.println(t3);
-  //Serial.println(h3);
   Serial.println(temperatureC);
   WiFi.begin(ssid, password);
-  while (WiFi.status() != WL_CONNECTED) {
-    Serial.println(".");
+  for(int s = 0;s<5;s++){
+    Serial.println(s);
     delay(1000);
     }
+  if(WiFi.status() != WL_CONNECTED) {
+    ESP.restart();
+   }
     WiFiClient client;
     HTTPClient http;
+    if(WiFi.status() == WL_CONNECTED) {
     timeClient.begin();
     timeClient.update();
-
     http.begin(serverName, root_ca);
     http.addHeader("Content-Type", "application/x-www-form-urlencoded");
-    
     String httpRequestData = "api_key=tPmAT5Ab3j7F9&timedate="+String(timeClient.getFormattedTime())+"&siteLocation="+siteLocation+"&T1=404.00&H1=404.00&T2=404.00&H2=404.00&T3="+String(temperatureC)+"&H3=404.00&T4=404.00&H4=404.00&T5=404.00&H5=404.00&T6=404.00&H6=404.00&T7=404.00&H7=404.00&T8=404.00&H8=404.00&T9=404.00&H9=404.00&T10=404.00&H10=404.00&T11=404.00&H11=404.00&T12=404.00&H12=404.00&T13=404.00&H13=404.00&MAC="+String(WiFi.macAddress());
     Serial.print("httpRequestData: ");
     Serial.println(httpRequestData);
-    int httpResponseCode = http.POST(httpRequestData);    
-    if (httpResponseCode>0) {
-      Serial.print("HTTP Response code: ");
-      Serial.println(httpResponseCode);
-    }
-    else {
-      Serial.print("Error code: ");
-      Serial.println(httpResponseCode);
-    }
+    int httpResponseCode = http.POST(httpRequestData);}
+    WiFi.disconnect();    
   http.end();
-  WiFi.disconnect();
   delay(10000);
-  ESP.restart();
-    
+  ESP.restart();  
 }

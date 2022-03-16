@@ -534,15 +534,15 @@ void loop() {
   ///////////////////////////////////////////////////////////
 
   WiFi.begin(ssid, password);
-  while (WiFi.status() != WL_CONNECTED) {
-    Serial.println(".");
+  delay(5000);
+  if(WiFi.status() != WL_CONNECTED) {
     delay(1000);
-    }
+    ESP.restart();
+   }
+   
    timeClient.begin();
    timeClient.setTimeOffset(19800);
-
-  //if(WiFi.status()== WL_CONNECTED){
-    timeClient.update();
+   timeClient.update();
     unsigned long epochTime = timeClient.getEpochTime();
     formattedTime = timeClient.getFormattedTime();
     struct tm *ptm = gmtime ((time_t *)&epochTime);
