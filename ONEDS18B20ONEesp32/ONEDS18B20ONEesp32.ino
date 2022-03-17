@@ -75,6 +75,7 @@ void loop() {
     delay(1000);
     }
   if(WiFi.status() != WL_CONNECTED) {
+    Serial.println("no wifi");
     ESP.restart();
    }
     WiFiClient client;
