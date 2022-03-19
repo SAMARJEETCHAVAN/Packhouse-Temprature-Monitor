@@ -59,7 +59,7 @@ void setup() {
   Serial.begin(115200);
   Serial.setTimeout(2000);
   while(!Serial) { }
-  for(int s = 0;s<60;s++){
+  for(int s = 0;s<600;s++){
     Serial.println(s);
     delay(1000);
     }
@@ -70,11 +70,16 @@ void loop() {
   float temperatureC = sensors.getTempCByIndex(0);
   Serial.println(temperatureC);
   int timeout = millis();
-  WiFi.begin(ssid, password);
+   WiFi.begin(ssid, password);
   while(WiFi.status()!= WL_CONNECTED) {
       Serial.println(".");
-      if((millis()-timeout)>=60000){
+      if((millis()-timeout)>=600000){
         ESP.restart();}
+      if((millis()-timeout)>=15000){
+        if(WiFi.status()!= WL_CONNECTED) {
+          Serial.println("Connecting to WiFi again!");
+          WiFi.begin(ssid, password);}
+        timeout = millis();}
    }
     WiFiClient client;
     HTTPClient http;

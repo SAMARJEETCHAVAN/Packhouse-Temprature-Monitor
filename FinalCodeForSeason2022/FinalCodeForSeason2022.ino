@@ -50,7 +50,7 @@ const char *ssid     = "FENET";
 const char *password = "12345678";
 const char* serverName = "https://www.feweather.com/post-packhouse-data.php";
 String apiKeyValue = "tPmAT5Ab3j7F9";
-String siteLocation = "IDEAL";
+String siteLocation = "MIRAJ";
 String room1 = "SMALL PRE-COOL";
 String room2 = "BIG PRE-COOL";
 String room3 = "COLD STORAGE";
@@ -533,17 +533,17 @@ void loop() {
 
   ///////////////////////////////////////////////////////////
 
+  int timeout = millis();
   WiFi.begin(ssid, password);
-  //delay(5000);
-  int timeout = 0;
   while(WiFi.status()!= WL_CONNECTED) {
       Serial.println(".");
-      delay(1000);
-      if(timeout==60){
+      if((millis()-timeout)>=600000){
         ESP.restart();}
-      else{
-        timeout = timeout + 1;
-      }
+      if((millis()-timeout)>=15000){
+        if(WiFi.status()!= WL_CONNECTED) {
+          Serial.println("Connecting to WiFi again!");
+          WiFi.begin(ssid, password);}
+        timeout = millis();}
    }
    
    Serial.println("atempting to upload");
