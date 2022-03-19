@@ -10,7 +10,7 @@ OneWire oneWire(oneWireBus);
 DallasTemperature sensors(&oneWire);
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP,"asia.pool.ntp.org", 19800, 60000);
-const char *ssid     = "MIRAJ";
+const char *ssid     = "FENET";
 const char *password = "12345678";
 const char* serverName = "https://www.feweather.com/post-packhouse-data.php";
 String apiKeyValue = "tPmAT5Ab3j7F9";
@@ -59,7 +59,7 @@ void setup() {
   Serial.begin(115200);
   Serial.setTimeout(2000);
   while(!Serial) { }
-  for(int s = 0;s<600;s++){
+  for(int s = 0;s<60;s++){
     Serial.println(s);
     delay(1000);
     }
