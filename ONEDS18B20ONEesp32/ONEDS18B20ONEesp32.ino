@@ -69,16 +69,12 @@ void loop() {
   sensors.requestTemperatures(); 
   float temperatureC = sensors.getTempCByIndex(0);
   Serial.println(temperatureC);
+  int timeout = millis();
   WiFi.begin(ssid, password);
-  int timeout = 0;
   while(WiFi.status()!= WL_CONNECTED) {
       Serial.println(".");
-      delay(1000);
-      if(timeout==60){
+      if((millis()-timeout)>=60000){
         ESP.restart();}
-      else{
-        timeout = timeout + 1;
-      }
    }
     WiFiClient client;
     HTTPClient http;
