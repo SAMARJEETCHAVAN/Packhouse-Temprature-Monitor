@@ -10,7 +10,7 @@ OneWire oneWire(oneWireBus);
 DallasTemperature sensors(&oneWire);
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP,"asia.pool.ntp.org", 19800, 60000);
-const char *ssid     = "FENET";
+const char *ssid     = "MIRAJ";
 const char *password = "12345678";
 const char* serverName = "https://www.feweather.com/post-packhouse-data.php";
 String apiKeyValue = "tPmAT5Ab3j7F9";
@@ -70,13 +70,15 @@ void loop() {
   float temperatureC = sensors.getTempCByIndex(0);
   Serial.println(temperatureC);
   WiFi.begin(ssid, password);
-  for(int s = 0;s<5;s++){
-    Serial.println(s);
-    delay(1000);
-    }
-  if(WiFi.status() != WL_CONNECTED) {
-    Serial.println("no wifi");
-    ESP.restart();
+  int timeout = 0;
+  while(WiFi.status()!= WL_CONNECTED) {
+      Serial.println(".");
+      delay(1000);
+      if(timeout==60){
+        ESP.restart();}
+      else{
+        timeout = timeout + 1;
+      }
    }
     WiFiClient client;
     HTTPClient http;
