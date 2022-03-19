@@ -534,11 +534,16 @@ void loop() {
   ///////////////////////////////////////////////////////////
 
   WiFi.begin(ssid, password);
-  delay(5000);
-  if(WiFi.status() != WL_CONNECTED) {
-    Serial.println("turning off esp due to lack of connectivity.");
-    delay(1000);
-    ESP.restart();
+  //delay(5000);
+  int timeout = 0;
+  while(WiFi.status()!= WL_CONNECTED) {
+      Serial.println(".");
+      delay(1000);
+      if(timeout==60){
+        ESP.restart();}
+      else{
+        timeout = timeout + 1;
+      }
    }
    
    Serial.println("atempting to upload");
