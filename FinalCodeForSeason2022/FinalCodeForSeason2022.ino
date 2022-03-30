@@ -510,6 +510,7 @@ void loop() {
   Serial.println("Humidity IN "+room13);
   Serial.println(h13);
   Serial.println("Feels Like="+String(h13ic)+"'C IN "+room13);
+  WiFi.begin(ssid, password);
   lcd.setCursor(0, 0);
   lcd.print("                    ");
   lcd.setCursor(0, 1);
@@ -526,25 +527,41 @@ void loop() {
   lcd.setCursor(0, 2);
   lcd.print("TRYING TO");
   lcd.setCursor(0, 3);
-  lcd.print("UPLOAD DATA");
+  lcd.print("CONNECT 2 FENET");
   delay(1000);
-  ///////////////////////////////////////////////////////////
-
-
-  ///////////////////////////////////////////////////////////
-
   int timeout = millis();
-  WiFi.begin(ssid, password);
+  
   while(WiFi.status()!= WL_CONNECTED) {
       Serial.println(".");
-      if((millis()-timeout)>=600000){
-        ESP.restart();}
-      if((millis()-timeout)>=15000){
+      Serial.println((millis()-timeout));
+      if((millis()-timeout)>=120000){
+        
+          Serial.println("WIFI CONNECTION FAILED");
+          lcd.setCursor(0, 0);
+          lcd.print("                    ");
+          lcd.setCursor(0, 1);
+          lcd.print("                    ");
+          lcd.setCursor(0, 2);
+          lcd.print("                    ");
+          lcd.setCursor(0, 3);
+          lcd.print("                    ");
+          delay(1000);
+          lcd.setCursor(0, 0);
+          lcd.print("WIFI");
+          lcd.setCursor(0, 1);
+          lcd.print("CONNECTION");
+          lcd.setCursor(0, 2);
+          lcd.print("FAILED");
+          lcd.setCursor(0, 3);
+          lcd.print("WILL REBOOT");
+          delay(60000);
+          ESP.restart();}
+  }
+      /*if((millis()-timeout)>=15000){
         if(WiFi.status()!= WL_CONNECTED) {
           Serial.println("Connecting to WiFi again!");
           WiFi.begin(ssid, password);}
-        timeout = millis();}
-   }
+        timeout = millis();}*/
    
    Serial.println("atempting to upload");
    timeClient.begin();
