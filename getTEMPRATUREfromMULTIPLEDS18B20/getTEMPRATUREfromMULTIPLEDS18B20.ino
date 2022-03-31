@@ -2,206 +2,21 @@
 #include <DallasTemperature.h>
 #include <LiquidCrystal_I2C.h>
 #include <Wire.h>
+#include <WiFi.h>
+#include <WiFiUdp.h>
+#include <HTTPClient.h>
+#include <NTPClient.h>
+#define ONE_WIRE_BUS 27
+OneWire oneWire(ONE_WIRE_BUS);
+DallasTemperature sensors(&oneWire);
 int lcdColumns = 20;
 int lcdRows = 4;
-
-
-// Data wire is plugged TO GPIO 4
-#define ONE_WIRE_BUS 27
-
-// Setup a oneWire instance to communicate with any OneWire devices (not just Maxim/Dallas temperature ICs)
-OneWire oneWire(ONE_WIRE_BUS);
-
-// Pass our oneWire reference to Dallas Temperature. 
-DallasTemperature sensors(&oneWire);
-
-// Number of temperature devices found
 int numberOfDevices;
-
-// We'll use this variable to store a found device address
 DeviceAddress tempDeviceAddress; 
 LiquidCrystal_I2C lcd(0x27, lcdColumns, lcdRows);
 
-void setup(){
-  // start serial port
-  Serial.begin(115200);
-  lcd.init();
-  lcd.backlight();
-  Wire.setClock(10000);
-  // Start up the library
-  sensors.begin();
-  lcd.setCursor(0, 0);
-  lcd.print("                    ");
-  lcd.setCursor(0, 1);
-  lcd.print("                    ");
-  lcd.setCursor(0, 2);
-  lcd.print("                    ");
-  lcd.setCursor(0, 3);
-  lcd.print("                    ");
-  delay(1000);
-  lcd.setCursor(0, 0);
-  lcd.print("Reading");
-  lcd.setCursor(0, 1);
-  lcd.print("SENSORS");
-  lcd.setCursor(0, 2);
-  lcd.print("PLEASE");
-  lcd.setCursor(0, 3);
-  lcd.print("WAIT");
-  delay(1000);
-  
-  // Grab a count of devices on the wire
-  numberOfDevices = sensors.getDeviceCount();
-  
-  // locate devices on the bus
-  Serial.print("Locating devices...");
-  Serial.print("Found ");
-  Serial.print(numberOfDevices, DEC);
-  Serial.println(" devices.");
-  lcd.setCursor(0, 0);
-  lcd.print("                    ");
-  lcd.setCursor(0, 1);
-  lcd.print("                    ");
-  lcd.setCursor(0, 2);
-  lcd.print("                    ");
-  lcd.setCursor(0, 3);
-  lcd.print("                    ");
-  delay(1000);
-  lcd.setCursor(0, 0);
-  lcd.print("Locating devices");
-  lcd.setCursor(0, 1);
-  lcd.print("Found");
-  lcd.setCursor(0, 2);
-  lcd.print(String(numberOfDevices));
-  lcd.setCursor(0, 3);
-  lcd.print("devices");
-  delay(1000);
-
-  // Loop through each device, print out address
-  for(int i=0;i<numberOfDevices; i++){
-    // Search the wire for address
-    if(sensors.getAddress(tempDeviceAddress, i)){
-      Serial.print("Found device ");
-      Serial.print(i, DEC);
-      Serial.print(" with address: ");
-      String deviceaddr = printAddress(tempDeviceAddress);
-       
-      Serial.println();
-      
-  lcd.setCursor(0, 0);
-  lcd.print("                    ");
-  lcd.setCursor(0, 1);
-  lcd.print("                    ");
-  lcd.setCursor(0, 2);
-  lcd.print("                    ");
-  lcd.setCursor(0, 3);
-  lcd.print("                    ");
-  delay(1000);
-  lcd.setCursor(0, 0);
-  lcd.print("found dewvice");
-  lcd.setCursor(0, 1);
-  lcd.print(String(i));
-  lcd.setCursor(0, 2);
-  lcd.print(deviceaddr);
-  lcd.setCursor(0, 3);
-  lcd.print("devices");
-  delay(1000);
-    } else {
-      String deviceaddr = printAddress(tempDeviceAddress);
-      Serial.print("Found ghost device at ");
-      Serial.print(i, DEC);
-      Serial.print(" but could not detect address. Check power and cabling");
-      
-  lcd.setCursor(0, 0);
-  lcd.print("                    ");
-  lcd.setCursor(0, 1);
-  lcd.print("                    ");
-  lcd.setCursor(0, 2);
-  lcd.print("                    ");
-  lcd.setCursor(0, 3);
-  lcd.print("                    ");
-  delay(1000);
-  lcd.setCursor(0, 0);
-  lcd.print("found ghost @");
-  lcd.setCursor(0, 1);
-  lcd.print("could not detect ");
-  lcd.setCursor(0, 2);
-  lcd.print(deviceaddr);
-  lcd.setCursor(0, 3);
-  lcd.print("address");
-  delay(1000);
-    }
-  }
-}
-
-void loop(){ 
-  sensors.requestTemperatures(); // Send the command to get temperatures
-  
-  // Loop through each device, print out temperature data
-  for(int i=0;i<numberOfDevices; i++){
-    // Search the wire for address
-    if(sensors.getAddress(tempDeviceAddress, i)){
-      // Output the device ID
-      Serial.print("Temperature for device: ");
-      Serial.println(i,DEC);
-      // Print the data
-      float tempC = sensors.getTempC(tempDeviceAddress);
-      Serial.print("Temp C: ");
-      Serial.print(tempC);
-      Serial.print(" Temp F: ");
-      Serial.println(DallasTemperature::toFahrenheit(tempC)); // Converts tempC to Fahrenheit
-      
-  lcd.setCursor(0, 0);
-  lcd.print("                    ");
-  lcd.setCursor(0, 1);
-  lcd.print("                    ");
-  lcd.setCursor(0, 2);
-  lcd.print("                    ");
-  lcd.setCursor(0, 3);
-  lcd.print("                    ");
-  delay(1000);
-  lcd.setCursor(0, 0);
-  lcd.print("Temperature for");
-  lcd.setCursor(0, 1);
-  lcd.print(String(i));
-  lcd.setCursor(0, 2);
-  lcd.print(String(tempC));
-  lcd.setCursor(0, 3);
-  lcd.print("ok");
-  delay(10000);
-    }
-  }
-  delay(5000);
-}
-
-// function to print a device address
-String printAddress(DeviceAddress deviceAddress) {
-  for (uint8_t i = 0; i < 8; i++){
-    if (deviceAddress[i] < 16) Serial.print("0");
-      Serial.print(deviceAddress[i], HEX);
-      return(String(deviceAddress[i], HEX));
-  }
-}
-/*
-#include <OneWire.h>
-#include <DallasTemperature.h>
-#include <LiquidCrystal_I2C.h>
-#include <Wire.h>
-
-#define ONE_WIRE_BUS 27
-OneWire oneWire(ONE_WIRE_BUS);
-DallasTemperature sensors(&oneWire);
-
-DeviceAddress sensor1 = { 0x28, 0xCD, 0x73, 0x99, 0x5C, 0x20, 0x01, 0xB6 };
-DeviceAddress sensor2 = { 0x28, 0xF2, 0xC8, 0x06, 0x64, 0x20, 0x01, 0xB3 };
-DeviceAddress sensor3 = { 0x28, 0x6A, 0x16, 0xF5, 0x4F, 0x20, 0x01, 0xF3 };
-DeviceAddress sensor4 = { 0x28, 0xC1, 0x77, 0xE8, 0x4F, 0x20, 0x01, 0x2E };
-DeviceAddress sensor5 = { 0x28, 0xB3, 0x43, 0xFC, 0x4E, 0x20, 0x01, 0xDE };
-DeviceAddress sensor8 = { 0x28, 0x7E, 0xEF, 0xE6, 0x5D, 0x20, 0x01, 0x94 };
-DeviceAddress sensor9 = { 0x28, 0xC3, 0xB0, 0xF0, 0x5D, 0x20, 0x01, 0x12 };
-DeviceAddress sensor10 = { 0x28, 0xC5, 0x45, 0xDC, 0xF5, 0x20, 0x01, 0xB6 };
-DeviceAddress sensor11 = { 0x28, 0x25, 0xDD, 0x3, 0x50, 0x20, 0x01, 0x9D };
-DeviceAddress sensor13 = { 0x28, 0xAC, 0xF8, 0xDC, 0x5D, 0x20, 0x01, 0x40 };
-
+const char *ssid     = "FENET";
+const char *password = "12345678";
 const char* serverName = "https://www.feweather.com/post-packhouse-data.php";
 String apiKeyValue = "tPmAT5Ab3j7F9";
 String siteLocation = "MIRAJ";
@@ -223,10 +38,34 @@ String formattedTime = "00:00:00";//timeClient.getFormattedTime();
 int monthDay = 0;//ptm->tm_mday;
 int currentMonth = 0;//ptm->tm_mon+1;
 int currentYear = 0;//ptm->tm_year+1900;
-int lcdColumns = 20;
-int lcdRows = 4;
 
 
+  String t1 = "404.00";
+  String t2 = "404.00";
+  String t3 = "404.00";
+  String t4 = "404.00";
+  String t5 = "404.00";
+  String t6 = "404.00";
+  String t7 = "404.00";
+  String t8 = "404.00";
+  String t9 = "404.00";
+  String t10 = "404.00";
+  String t11 = "404.00";
+  String t12 = "404.00";
+  String t13 = "404.00";
+  String h1 = "404.00";
+  String h2 = "404.00";
+  String h3 = "404.00";
+  String h4 = "404.00";
+  String h5 = "404.00";
+  String h6 = "404.00";
+  String h7 = "404.00";
+  String h8 = "404.00";
+  String h9 = "404.00";
+  String h10 = "404.00";
+  String h11 = "404.00";
+  String h12 = "404.00";
+  String h13 = "404.00";
 const char* root_ca= \
 "-----BEGIN CERTIFICATE-----\n" \
 "MIIF2DCCA8CgAwIBAgIQTKr5yttjb+Af907YWwOGnTANBgkqhkiG9w0BAQwFADCB\n" \
@@ -263,13 +102,16 @@ const char* root_ca= \
 "NVOFBkpdn627G190\n" \
 "-----END CERTIFICATE-----\n";
 
-LiquidCrystal_I2C lcd(0x27, lcdColumns, lcdRows);
-void setup(void){
+WiFiUDP ntpUDP;
+NTPClient timeClient(ntpUDP, "asia.pool.ntp.org");
+
+
+void setup(){
   Serial.begin(115200);
-  sensors.begin();
   lcd.init();
   lcd.backlight();
   Wire.setClock(10000);
+  sensors.begin();
   lcd.setCursor(0, 0);
   lcd.print("                    ");
   lcd.setCursor(0, 1);
@@ -288,217 +130,481 @@ void setup(void){
   lcd.setCursor(0, 3);
   lcd.print("WAIT");
   delay(1000);
+  }
+
+void loop(){
+    int boottime = int(millis());
+
+   t1 = "404.00";
+   t2 = "404.00";
+   t3 = "404.00";
+   t4 = "404.00";
+   t5 = "404.00";
+   t6 = "404.00";
+   t7 = "404.00";
+   t8 = "404.00";
+   t9 = "404.00";
+   t10 = "404.00";
+   t11 = "404.00";
+   t12 = "404.00";
+   t13 = "404.00";
+   h1 = "404.00";
+   h2 = "404.00";
+   h3 = "404.00";
+   h4 = "404.00";
+   h5 = "404.00";
+   h6 = "404.00";
+   h7 = "404.00";
+   h8 = "404.00";
+   h9 = "404.00";
+   h10 = "404.00";
+   h11 = "404.00";
+   h12 = "404.00";
+   h13 = "404.00"; 
+  numberOfDevices = sensors.getDeviceCount();
+  Serial.print("Locating devices...");
+  Serial.print("Found ");
+  Serial.print(numberOfDevices, DEC);
+  Serial.println(" devices.");
+  lcd.setCursor(0, 0);
+  lcd.print("                    ");
+  lcd.setCursor(0, 1);
+  lcd.print("                    ");
+  lcd.setCursor(0, 2);
+  lcd.print("                    ");
+  lcd.setCursor(0, 3);
+  lcd.print("                    ");
+  delay(1000);
+  lcd.setCursor(0, 0);
+  lcd.print("Locating devices");
+  lcd.setCursor(0, 1);
+  lcd.print("Found");
+  lcd.setCursor(0, 2);
+  lcd.print(String(numberOfDevices));
+  lcd.setCursor(0, 3);
+  lcd.print("devices");
+  delay(1000);
+  for(int i=0;i<numberOfDevices; i++){
+    if(sensors.getAddress(tempDeviceAddress, i)){
+      Serial.print("Found device ");
+      Serial.print(i, DEC);
+      Serial.print(" with address: ");
+      String deviceaddr = printAddress(tempDeviceAddress);   
+      Serial.println();
+      
+  /*lcd.setCursor(0, 0);
+  lcd.print("                    ");
+  lcd.setCursor(0, 1);
+  lcd.print("                    ");
+  lcd.setCursor(0, 2);
+  lcd.print("                    ");
+  lcd.setCursor(0, 3);
+  lcd.print("                    ");
+  delay(1000);
+  lcd.setCursor(0, 0);
+  lcd.print("found dewvice");
+  lcd.setCursor(0, 1);
+  lcd.print(String(i));
+  lcd.setCursor(0, 2);
+  lcd.print(deviceaddr);
+  lcd.setCursor(0, 3);
+  lcd.print("devices");
+  delay(1000);*/
+    } else {
+      String deviceaddr = printAddress(tempDeviceAddress);
+      Serial.print("Found ghost device at ");
+      Serial.print(i, DEC);
+      Serial.print(" but could not detect address. Check power and cabling");
+      
+  /*lcd.setCursor(0, 0);
+  lcd.print("                    ");
+  lcd.setCursor(0, 1);
+  lcd.print("                    ");
+  lcd.setCursor(0, 2);
+  lcd.print("                    ");
+  lcd.setCursor(0, 3);
+  lcd.print("                    ");
+  delay(1000);
+  lcd.setCursor(0, 0);
+  lcd.print("found ghost @");
+  lcd.setCursor(0, 1);
+  lcd.print("could not detect ");
+  lcd.setCursor(0, 2);
+  lcd.print(deviceaddr);
+  lcd.setCursor(0, 3);
+  lcd.print("address");
+  delay(1000);*/
+    }
+  }
+
+  
+  sensors.requestTemperatures(); // Send the command to get temperatures
+  for(int i=0;i<numberOfDevices; i++){
+    if(sensors.getAddress(tempDeviceAddress, i)){
+      Serial.print("Temperature for device: ");
+      Serial.println(i,DEC);
+      String deviceaddr = printAddress(tempDeviceAddress);   
+      float tempC = sensors.getTempC(tempDeviceAddress);
+      Serial.println(tempC);
+      Serial.println(deviceaddr);
+      if(String(deviceaddr)=="28b343fc4e201de"){
+        t5=String(tempC);}
+      else if(String(deviceaddr)=="287eefe65d20194"){
+        t8=String(tempC);
+        }
+      else if(String(deviceaddr)=="28c3b0f05d20112"){
+        t9=String(tempC);
+        }
+      else if(String(deviceaddr)=="2825dd3502019d"){
+        t11=String(tempC);
+        }
+      else if(String(deviceaddr)=="28c545dc5d201b6"){
+        t10=String(tempC);
+        }
+      
+      else if(String(deviceaddr)=="28cd73995c201c5"){
+        t1=String(tempC);
+        }
+      else if(String(deviceaddr)=="286a16f54f201f3"){
+        t3=String(tempC);
+        }
+      else if(String(deviceaddr)=="28acf8dc5d20140"){
+        t13=String(tempC);
+        }
+      else if(String(deviceaddr)=="28C177E84F2012E"){
+        t4=String(tempC);
+        }
+      else if(String(deviceaddr)=="28f2c8664201b3"){
+        t2=String(tempC);
+        }
+    }
+  }
+  WiFi.begin(ssid, password);
+  lcd.setCursor(0, 0);
+  lcd.print("                    ");
+  lcd.setCursor(0, 1);
+  lcd.print("                    ");
+  lcd.setCursor(0, 2);
+  lcd.print("                    ");
+  lcd.setCursor(0, 3);
+  lcd.print("                    ");
+  delay(1000);
+  lcd.setCursor(0, 0);
+  lcd.print("PLEASE WAIT");
+  lcd.setCursor(0, 1);
+  lcd.print("WHILE");
+  lcd.setCursor(0, 2);
+  lcd.print("TRYING TO");
+  lcd.setCursor(0, 3);
+  lcd.print("CONNECT 2 FENET");
+  delay(1000);
+  int timeout = millis();
+  while(WiFi.status()!= WL_CONNECTED) {
+      Serial.println(".");
+      Serial.println((millis()-timeout));
+      if((millis()-timeout)>=120000){
+        
+          Serial.println("WIFI CONNECTION FAILED");
+          lcd.setCursor(0, 0);
+          lcd.print("                    ");
+          lcd.setCursor(0, 1);
+          lcd.print("                    ");
+          lcd.setCursor(0, 2);
+          lcd.print("                    ");
+          lcd.setCursor(0, 3);
+          lcd.print("                    ");
+          delay(1000);
+          lcd.setCursor(0, 0);
+          lcd.print("WIFI");
+          lcd.setCursor(0, 1);
+          lcd.print("CONNECTION");
+          lcd.setCursor(0, 2);
+          lcd.print("FAILED");
+          lcd.setCursor(0, 3);
+          lcd.print("WILL REBOOT");
+          delay(60000);
+          ESP.restart();
+          }
+  }
+  timeClient.begin();
+  timeClient.setTimeOffset(19800);
+  timeClient.update();
+  unsigned long epochTime = timeClient.getEpochTime();
+  formattedTime = timeClient.getFormattedTime();
+  struct tm *ptm = gmtime ((time_t *)&epochTime);
+  monthDay = ptm->tm_mday;
+  currentMonth = ptm->tm_mon+1;
+  currentYear = ptm->tm_year+1900;
+  timedate = String(currentYear) + "-" + String(currentMonth) + "-" + String(monthDay)+ " "+formattedTime;
+  WiFiClient client;
+  HTTPClient http;
+  http.begin(serverName, root_ca);
+  http.addHeader("Content-Type", "application/x-www-form-urlencoded");
+  String httpRequestData = "api_key=tPmAT5Ab3j7F9&timedate="+String(timedate)+"&siteLocation="+siteLocation+"&T1="+String(t1)+"&H1="+String(h1)+"&T2="+String(t2)+"&H2="+String(h2)+"&T3="+String(t3)+"&H3="+String(h3)+"&T4="+String(t4)+"&H4="+String(h4)+"&T5="+String(t5)+"&H5="+String(h5)+"&T6="+String(t6)+"&H6="+String(h6)+"&T7="+String(t7)+"&H7="+String(h7)+"&T8="+String(t8)+"&H8="+String(h8)+"&T9="+String(t9)+"&H9="+String(h9)+"&T10="+String(t10)+"&H10="+String(h10)+"&T11="+String(t11)+"&H11="+String(h11)+"&T12="+String(t12)+"&H12="+String(h12)+"&T13="+String(t13)+"&H13="+String(h13)+"&MAC="+String(WiFi.macAddress());
+    Serial.print("httpRequestData: ");
+    Serial.println(httpRequestData);
+    int httpResponseCode = http.POST(httpRequestData);
+    if (httpResponseCode>0) {
+      Serial.print("HTTP Response code: ");
+      Serial.println(httpResponseCode);
+    }
+    else {
+      Serial.print("Error code: ");
+      Serial.println(httpResponseCode);
+      lcd.setCursor(0, 0);
+      lcd.print("                    ");
+      lcd.setCursor(0, 1);
+      lcd.print("                    ");
+      lcd.setCursor(0, 2);
+      lcd.print("                    ");
+      lcd.setCursor(0, 3);
+      lcd.print("                    ");
+      delay(1000);
+      lcd.setCursor(0, 0);
+      lcd.print("HTTPcode:"+String(httpResponseCode));
+      lcd.setCursor(0, 1);
+      lcd.print(timedate);
+      if(httpResponseCode==200){
+      lcd.setCursor(0, 2);
+      lcd.print("Upload was ");
+      lcd.setCursor(0, 3);
+      lcd.print("Sucessful");
+      delay(60000);}
+      else{
+          lcd.setCursor(0, 2);
+          lcd.print("Upload was ");
+          lcd.setCursor(0, 3);
+          lcd.print("Unsucessful");
+          delay(60000);
+          ESP.restart();
+  http.end();
+  WiFi.disconnect();
+  }
+  }
+  while((int(millis())-boottime)<600000){
+    lcd.setCursor(0, 0);
+  lcd.print("                    ");
+  lcd.setCursor(0, 1);
+  lcd.print("                    ");
+  lcd.setCursor(0, 2);
+  lcd.print("                    ");
+  lcd.setCursor(0, 3);
+  lcd.print("                    ");
+  delay(1000);
+  lcd.setCursor(0, 0);
+  lcd.print("HTTPcode:"+String(httpResponseCode));
+  lcd.setCursor(0, 1);
+  lcd.print(timedate);
+  if(httpResponseCode==200){
+  lcd.setCursor(0, 2);
+  lcd.print("Upload was ");
+  lcd.setCursor(0, 3);
+  lcd.print("Sucessful");
+  }
+  delay(10000);
+  lcd.setCursor(0, 0);
+  lcd.print("                    ");
+  lcd.setCursor(0, 1);
+  lcd.print("                    ");
+  lcd.setCursor(0, 2);
+  lcd.print("                    ");
+  lcd.setCursor(0, 3);
+  lcd.print("                    ");
+  delay(1000);
+  lcd.setCursor(0, 0);
+  lcd.print("Room="+room1);
+  lcd.setCursor(0, 1);
+  lcd.print("Temperature="+String(t1)+"'C");
+  lcd.setCursor(0, 2);
+  lcd.print("Above reading @");
+  lcd.setCursor(0, 3);
+  lcd.print(String(timedate));
+  delay(10000);
+  lcd.setCursor(0, 0);
+  lcd.print("                    ");
+  lcd.setCursor(0, 1);
+  lcd.print("                    ");
+  lcd.setCursor(0, 2);
+  lcd.print("                    ");
+  lcd.setCursor(0, 3);
+  lcd.print("                    ");
+  delay(1000);
+  lcd.setCursor(0, 0);
+  lcd.print("Room="+room2);
+  lcd.setCursor(0, 1);
+  lcd.print("Temperature="+String(t2)+"'C");
+  lcd.setCursor(0, 2);
+  lcd.print("Above reading @");
+  lcd.setCursor(0, 3);
+  lcd.print(String(timedate));
+  delay(10000);
+  lcd.setCursor(0, 0);
+  lcd.print("                    ");
+  lcd.setCursor(0, 1);
+  lcd.print("                    ");
+  lcd.setCursor(0, 2);
+  lcd.print("                    ");
+  lcd.setCursor(0, 3);
+  lcd.print("                    ");
+  delay(1000);
+  lcd.setCursor(0, 0);
+  lcd.print("Room="+room3);
+  lcd.setCursor(0, 1);
+  lcd.print("Temperature="+String(t3)+"'C");
+  lcd.setCursor(0, 2);
+  lcd.print("Above reading @");
+  lcd.setCursor(0, 3);
+  lcd.print(String(timedate));
+  delay(10000);
+  lcd.setCursor(0, 0);
+  lcd.print("                    ");
+  lcd.setCursor(0, 1);
+  lcd.print("                    ");
+  lcd.setCursor(0, 2);
+  lcd.print("                    ");
+  lcd.setCursor(0, 3);
+  lcd.print("                    ");
+  delay(1000);
+  lcd.setCursor(0, 0);
+  lcd.print("Room="+room4);
+  lcd.setCursor(0, 1);
+  lcd.print("Temperature="+String(t4)+"'C");
+  lcd.setCursor(0, 2);
+  lcd.print("Above reading @");
+  lcd.setCursor(0, 3);
+  lcd.print(String(timedate));
+  delay(10000);
+  lcd.setCursor(0, 0);
+  lcd.print("                    ");
+  lcd.setCursor(0, 1);
+  lcd.print("                    ");
+  lcd.setCursor(0, 2);
+  lcd.print("                    ");
+  lcd.setCursor(0, 3);
+  lcd.print("                    ");
+  delay(1000);
+  lcd.setCursor(0, 0);
+  lcd.print("Room="+room5);
+  lcd.setCursor(0, 1);
+  lcd.print("Temperature="+String(t5)+"'C");
+  lcd.setCursor(0, 2);
+  lcd.print("Above reading @");
+  lcd.setCursor(0, 3);
+  lcd.print(String(timedate));
+  delay(10000);
+  lcd.setCursor(0, 0);
+  lcd.print("                    ");
+  lcd.setCursor(0, 1);
+  lcd.print("                    ");
+  lcd.setCursor(0, 2);
+  lcd.print("                    ");
+  lcd.setCursor(0, 3);
+  lcd.print("                    ");
+  delay(1000);
+  lcd.setCursor(0, 0);
+  lcd.print("Room="+room8);
+  lcd.setCursor(0, 1);
+  lcd.print("Temperature="+String(t8)+"'C");
+  lcd.setCursor(0, 2);
+  lcd.print("Above reading @");
+  lcd.setCursor(0, 3);
+  lcd.print(String(timedate));
+  delay(10000);
+  lcd.setCursor(0, 0);
+  lcd.print("                    ");
+  lcd.setCursor(0, 1);
+  lcd.print("                    ");
+  lcd.setCursor(0, 2);
+  lcd.print("                    ");
+  lcd.setCursor(0, 3);
+  lcd.print("                    ");
+  delay(1000);
+  lcd.setCursor(0, 0);
+  lcd.print("Room="+room9);
+  lcd.setCursor(0, 1);
+  lcd.print("Temperature="+String(t9)+"'C");
+  lcd.setCursor(0, 2);
+  lcd.print("Above reading @");
+  lcd.setCursor(0, 3);
+  lcd.print(String(timedate));
+  delay(10000);
+  lcd.setCursor(0, 0);
+  lcd.print("                    ");
+  lcd.setCursor(0, 1);
+  lcd.print("                    ");
+  lcd.setCursor(0, 2);
+  lcd.print("                    ");
+  lcd.setCursor(0, 3);
+  lcd.print("                    ");
+  delay(1000);
+  lcd.setCursor(0, 0);
+  lcd.print("Room="+room10);
+  lcd.setCursor(0, 1);
+  lcd.print("Temperature="+String(t10)+"'C");
+  lcd.setCursor(0, 2);
+  lcd.print("Above reading @");
+  lcd.setCursor(0, 3);
+  lcd.print(String(timedate));
+  delay(10000);
+  lcd.setCursor(0, 0);
+  lcd.print("                    ");
+  lcd.setCursor(0, 1);
+  lcd.print("                    ");
+  lcd.setCursor(0, 2);
+  lcd.print("                    ");
+  lcd.setCursor(0, 3);
+  lcd.print("                    ");
+  delay(1000);
+  lcd.setCursor(0, 0);
+  lcd.print("Room="+room11);
+  lcd.setCursor(0, 1);
+  lcd.print("Temperature="+String(t11)+"'C");
+  lcd.setCursor(0, 2);
+  lcd.print("Above reading @");
+  lcd.setCursor(0, 3);
+  lcd.print(String(timedate));
+  delay(10000);
+  lcd.setCursor(0, 0);
+  lcd.print("                    ");
+  lcd.setCursor(0, 1);
+  lcd.print("                    ");
+  lcd.setCursor(0, 2);
+  lcd.print("                    ");
+  lcd.setCursor(0, 3);
+  lcd.print("                    ");
+  delay(1000);
+  lcd.setCursor(0, 0);
+  lcd.print("Room="+room13);
+  lcd.setCursor(0, 1);
+  lcd.print("Temperature="+String(t13)+"'C");
+  lcd.setCursor(0, 2);
+  lcd.print("Above reading @");
+  lcd.setCursor(0, 3);
+  lcd.print(String(timedate));
+  delay(10000);
+  lcd.setCursor(0, 0);
+  lcd.print("                    ");
+  lcd.setCursor(0, 1);
+  lcd.print("                    ");
+  lcd.setCursor(0, 2);
+  lcd.print("                    ");
+  lcd.setCursor(0, 3);
+  lcd.print("                    ");
+  delay(10000);
+    }
+  delay(5000);
 }
 
-void loop(void){ 
-  Serial.print("Requesting temperatures...");
-  sensors.requestTemperatures();
-  Serial.println("DONE");
-  Serial.print("Sensor 11(*C): ");
-  String t11 = String(sensors.getTempC(sensor11));
-  lcd.setCursor(0, 0);
-  lcd.print("                    ");
-  lcd.setCursor(0, 1);
-  lcd.print("                    ");
-  lcd.setCursor(0, 2);
-  lcd.print("                    ");
-  lcd.setCursor(0, 3);
-  lcd.print("                    ");
-  delay(1000);
-  lcd.setCursor(0, 0);
-  lcd.print("Temp@"+room11);
-  lcd.setCursor(0, 1);
-  lcd.print(String(t11));
-  lcd.setCursor(0, 2);
-  lcd.print("Reading SENSOR @");
-  lcd.setCursor(0, 3);
-  lcd.print(String(room1));
-  delay(10000);
-  Serial.println("DONE");
-  Serial.print("Sensor 1(*C): ");
-  String t1 = String(sensors.getTempC(sensor1));
-  lcd.setCursor(0, 0);
-  lcd.print("                    ");
-  lcd.setCursor(0, 1);
-  lcd.print("                    ");
-  lcd.setCursor(0, 2);
-  lcd.print("                    ");
-  lcd.setCursor(0, 3);
-  lcd.print("                    ");
-  delay(1000);
-  lcd.setCursor(0, 0);
-  lcd.print("Temp@"+room1);
-  lcd.setCursor(0, 1);
-  lcd.print(String(t1));
-  lcd.setCursor(0, 2);
-  lcd.print("Reading SENSOR @");
-  lcd.setCursor(0, 3);
-  lcd.print(String(room2));
-  delay(10000);
-  Serial.println("DONE");
-  Serial.print("Sensor 2(*C): ");
-  String t2 = String(sensors.getTempC(sensor2));
-  lcd.setCursor(0, 0);
-  lcd.print("                    ");
-  lcd.setCursor(0, 1);
-  lcd.print("                    ");
-  lcd.setCursor(0, 2);
-  lcd.print("                    ");
-  lcd.setCursor(0, 3);
-  lcd.print("                    ");
-  delay(1000);
-  lcd.setCursor(0, 0);
-  lcd.print("Temp@"+room2);
-  lcd.setCursor(0, 1);
-  lcd.print(String(t2));
-  lcd.setCursor(0, 2);
-  lcd.print("Reading SENSOR @");
-  lcd.setCursor(0, 3);
-  lcd.print(String(room3));
-  delay(10000);
-  Serial.println("DONE");
-  Serial.print("Sensor 3(*C): ");
-  String t3 = String(sensors.getTempC(sensor3));
-  lcd.setCursor(0, 0);
-  lcd.print("                    ");
-  lcd.setCursor(0, 1);
-  lcd.print("                    ");
-  lcd.setCursor(0, 2);
-  lcd.print("                    ");
-  lcd.setCursor(0, 3);
-  lcd.print("                    ");
-  delay(1000);
-  lcd.setCursor(0, 0);
-  lcd.print("Temp@"+room3);
-  lcd.setCursor(0, 1);
-  lcd.print(String(t3));
-  lcd.setCursor(0, 2);
-  lcd.print("Reading SENSOR @");
-  lcd.setCursor(0, 3);
-  lcd.print(String(room4));
-  delay(10000);
-  Serial.println("DONE");
-  Serial.print("Sensor 4(*C): ");
-  String t4 = String(sensors.getTempC(sensor4));
-  lcd.setCursor(0, 0);
-  lcd.print("                    ");
-  lcd.setCursor(0, 1);
-  lcd.print("                    ");
-  lcd.setCursor(0, 2);
-  lcd.print("                    ");
-  lcd.setCursor(0, 3);
-  lcd.print("                    ");
-  delay(1000);
-  lcd.setCursor(0, 0);
-  lcd.print("Temp@"+room4);
-  lcd.setCursor(0, 1);
-  lcd.print(String(t4));
-  lcd.setCursor(0, 2);
-  lcd.print("Reading SENSOR @");
-  lcd.setCursor(0, 3);
-  lcd.print(String(room5));
-  delay(10000);
-  Serial.println("DONE");
-  Serial.print("Sensor 5(*C): ");
-  String t5 = String(sensors.getTempC(sensor5));
-  lcd.setCursor(0, 0);
-  lcd.print("                    ");
-  lcd.setCursor(0, 1);
-  lcd.print("                    ");
-  lcd.setCursor(0, 2);
-  lcd.print("                    ");
-  lcd.setCursor(0, 3);
-  lcd.print("                    ");
-  delay(1000);
-  lcd.setCursor(0, 0);
-  lcd.print("Temp@"+room5);
-  lcd.setCursor(0, 1);
-  lcd.print(String(t5));
-  lcd.setCursor(0, 2);
-  lcd.print("Reading SENSOR @");
-  lcd.setCursor(0, 3);
-  lcd.print(String(room8));
-  delay(10000);
-  Serial.println("DONE");
-  Serial.print("Sensor 8(*C): ");
-  String t8 = String(sensors.getTempC(sensor8));
-  lcd.setCursor(0, 0);
-  lcd.print("                    ");
-  lcd.setCursor(0, 1);
-  lcd.print("                    ");
-  lcd.setCursor(0, 2);
-  lcd.print("                    ");
-  lcd.setCursor(0, 3);
-  lcd.print("                    ");
-  delay(1000);
-  lcd.setCursor(0, 0);
-  lcd.print("Temp@"+room8);
-  lcd.setCursor(0, 1);
-  lcd.print(String(t8));
-  lcd.setCursor(0, 2);
-  lcd.print("Reading SENSOR @");
-  lcd.setCursor(0, 3);
-  lcd.print(String(room9));
-  delay(10000);
-  Serial.println("DONE");
-  Serial.print("Sensor 9(*C): ");
-  String t9 = String(sensors.getTempC(sensor9));
-  lcd.setCursor(0, 0);
-  lcd.print("                    ");
-  lcd.setCursor(0, 1);
-  lcd.print("                    ");
-  lcd.setCursor(0, 2);
-  lcd.print("                    ");
-  lcd.setCursor(0, 3);
-  lcd.print("                    ");
-  delay(1000);
-  lcd.setCursor(0, 0);
-  lcd.print("Temp@"+room9);
-  lcd.setCursor(0, 1);
-  lcd.print(String(t9));
-  lcd.setCursor(0, 2);
-  lcd.print("Reading SENSOR @");
-  lcd.setCursor(0, 3);
-  lcd.print(String(room10));
-  delay(10000);
-  Serial.println("DONE");
-  Serial.print("Sensor 10(*C): ");
-  String t10 = String(sensors.getTempC(sensor10));
-  lcd.setCursor(0, 0);
-  lcd.print("                    ");
-  lcd.setCursor(0, 1);
-  lcd.print("                    ");
-  lcd.setCursor(0, 2);
-  lcd.print("                    ");
-  lcd.setCursor(0, 3);
-  lcd.print("                    ");
-  delay(1000);
-  lcd.setCursor(0, 0);
-  lcd.print("Temp@"+room10);
-  lcd.setCursor(0, 1);
-  lcd.print(String(t10));
-  lcd.setCursor(0, 2);
-  lcd.print("End of all");
-  lcd.setCursor(0, 3);
-  lcd.print("sensors");
-  delay(10000);
-  String t6 = "404";
-  String t7 = "404";
-  String t12 = "404";
-  String t13 = "404";
-  String h1 = "404";
-  String h2 = "404";
-  String h3 = "404";
-  String h4 = "404";
-  String h5 = "404";
-  String h6 = "404";
-  String h7 = "404";
-  String h8 = "404";
-  String h9 = "404";
-  String h10 = "404";
-  String h11 = "404";
-  String h12 = "404";
-  String h13 = "404";
+// function to print a device address
+String printAddress(DeviceAddress deviceAddress) {
+  String devadd = "";
+  for (uint8_t i = 0; i < 8; i++){
+    
+    if (deviceAddress[i] < 16) Serial.print("0");
+      //Serial.print(deviceAddress[i], HEX);
+      devadd = devadd + String(deviceAddress[i], HEX);
+  }
   
+      return(devadd);
 }
-*/
+//THIS THE CODE
